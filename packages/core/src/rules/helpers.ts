@@ -11,19 +11,41 @@ export interface FailOptions {
 export function findings(rule: Pick<Rule, 'id' | 'title' | 'specRef' | 'errorCode'>) {
   const base = { ruleId: rule.id, title: rule.title };
   return {
-    pass: (path: string, message: string, specRef = rule.specRef): Finding => ({ ...base, verdict: 'pass', path, message, specRef }),
+    pass: (path: string, message: string, specRef = rule.specRef): Finding => ({
+      ...base,
+      verdict: 'pass',
+      path,
+      message,
+      specRef,
+    }),
     fail: (path: string, message: string, fix: string, o: FailOptions = {}): Finding => {
-      const f: Finding = { ...base, verdict: 'fail', severity: o.severity ?? 'error', path, message, fix, specRef: o.specRef ?? rule.specRef };
+      const f: Finding = {
+        ...base,
+        verdict: 'fail',
+        severity: o.severity ?? 'error',
+        path,
+        message,
+        fix,
+        specRef: o.specRef ?? rule.specRef,
+      };
       const code = o.errorCode ?? rule.errorCode;
       if (code && f.severity === 'error') f.errorCode = code;
       return f;
     },
-    cannotVerify: (path: string, message: string, reason: string, specRef = rule.specRef): Finding => ({ ...base, verdict: 'cannot-verify', path, message, reason, specRef }),
+    cannotVerify: (path: string, message: string, reason: string, specRef = rule.specRef): Finding => ({
+      ...base,
+      verdict: 'cannot-verify',
+      path,
+      message,
+      reason,
+      specRef,
+    }),
   };
 }
 
 export const isNonEmptyString = (v: unknown): v is string => typeof v === 'string' && v.trim().length > 0;
-export const isPresent = (v: unknown): boolean => v !== undefined && v !== null && !(typeof v === 'string' && v.trim() === '');
+export const isPresent = (v: unknown): boolean =>
+  v !== undefined && v !== null && !(typeof v === 'string' && v.trim() === '');
 export const isNum = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
 export const normalise = (s: string): string => s.trim().toLowerCase().replace(/\s+/g, ' ');
 
@@ -74,20 +96,41 @@ export function checkRegistrationNumber(
   codes: { missing?: string; invalid?: string },
 ): Finding {
   if (typeof value === 'number') {
-    return f.fail(path, `${path} is a JSON number; FBR expects a string.`, 'Send the NTN/CNIC as a string of digits so leading zeros are kept.', { errorCode: codes.invalid });
+    return f.fail(
+      path,
+      `${path} is a JSON number; FBR expects a string.`,
+      'Send the NTN/CNIC as a string of digits so leading zeros are kept.',
+      { errorCode: codes.invalid },
+    );
   }
   if (!isNonEmptyString(value)) {
-    return f.fail(path, `${path} is missing or empty.`, 'Provide the 7-digit NTN or 13-digit CNIC as a string.', { errorCode: codes.missing });
+    return f.fail(path, `${path} is missing or empty.`, 'Provide the 7-digit NTN or 13-digit CNIC as a string.', {
+      errorCode: codes.missing,
+    });
   }
   const v = value.trim();
   if (!/^\d+$/.test(v)) {
-    return f.fail(path, `${path} contains characters other than digits.`, 'Remove dashes, spaces and letters; send digits only.', { errorCode: codes.invalid });
+    return f.fail(
+      path,
+      `${path} contains characters other than digits.`,
+      'Remove dashes, spaces and letters; send digits only.',
+      { errorCode: codes.invalid },
+    );
   }
   if (v.length === 7 || v.length === 13) return f.pass(path, `${path} is ${v.length} digits (NTN or CNIC).`);
   if (v.length === 9) {
-    return f.cannotVerify(path, `${path} is 9 digits.`, 'Spec v1.12 is inconsistent: error 0002 mentions a 9-digit NTN, while 0401/0402 and the samples only allow 7 or 13 digits. See docs/spec-traps.md.');
+    return f.cannotVerify(
+      path,
+      `${path} is 9 digits.`,
+      'Spec v1.12 is inconsistent: error 0002 mentions a 9-digit NTN, while 0401/0402 and the samples only allow 7 or 13 digits. See docs/spec-traps.md.',
+    );
   }
-  return f.fail(path, `${path} is ${v.length} digits; expected 7 (NTN) or 13 (CNIC).`, 'Check the registration number length.', { errorCode: codes.invalid });
+  return f.fail(
+    path,
+    `${path} is ${v.length} digits; expected 7 (NTN) or 13 (CNIC).`,
+    'Check the registration number length.',
+    { errorCode: codes.invalid },
+  );
 }
 
 /** Header keys exactly as spelled in the spec v1.12 §4.1.1 JSON samples. */
@@ -146,7 +189,14 @@ export const REQUIRED_ITEM_FIELDS = [
 
 /** Fields typed "Number (Decimal)" in spec v1.12 §4.1.2. */
 export const DECIMAL_FIELDS = {
-  required: ['quantity', 'totalValues', 'valueSalesExcludingST', 'fixedNotifiedValueOrRetailPrice', 'salesTaxApplicable', 'salesTaxWithheldAtSource'],
+  required: [
+    'quantity',
+    'totalValues',
+    'valueSalesExcludingST',
+    'fixedNotifiedValueOrRetailPrice',
+    'salesTaxApplicable',
+    'salesTaxWithheldAtSource',
+  ],
   optional: ['extraTax', 'furtherTax', 'fedPayable', 'discount'],
 } as const;
 

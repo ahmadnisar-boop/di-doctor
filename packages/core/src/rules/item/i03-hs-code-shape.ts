@@ -13,6 +13,13 @@ export const i03HsCodeShape: Rule = {
     const f = findings(this);
     const path = `items[${index}].hsCode`;
     if (/^\d{4}\.\d{4}$/.test(v.trim())) return [f.pass(path, 'hsCode looks like NNNN.NNNN.')];
-    return [f.fail(path, `hsCode "${v}" does not look like the NNNN.NNNN form used in the spec samples.`, "Check the code against FBR's item list. The format is only shown by example, so this is a warning.", { severity: 'warning' })];
+    return [
+      f.fail(
+        path,
+        `hsCode "${v}" does not look like the NNNN.NNNN form used in the spec samples.`,
+        "Check the code against FBR's item list. The format is only shown by example, so this is a warning.",
+        { severity: 'warning' },
+      ),
+    ];
   },
 };

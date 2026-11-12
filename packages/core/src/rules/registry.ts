@@ -77,7 +77,13 @@ const NOT_OBJECT: Rule = {
 
 export function runRules(input: unknown, options: ValidateOptions): Finding[] {
   if (typeof input !== 'object' || input === null || Array.isArray(input)) {
-    return [findings(NOT_OBJECT).fail('$', 'Payload is not a JSON object.', 'Send the invoice as a single JSON object (spec v1.12 §4.1.1 object model).')];
+    return [
+      findings(NOT_OBJECT).fail(
+        '$',
+        'Payload is not a JSON object.',
+        'Send the invoice as a single JSON object (spec v1.12 §4.1.1 object model).',
+      ),
+    ];
   }
   const invoice = input as InvoiceInput;
   const sid = typeof invoice['scenarioId'] === 'string' ? invoice['scenarioId'] : '';
@@ -91,7 +97,14 @@ export function runRules(input: unknown, options: ValidateOptions): Finding[] {
   if (Array.isArray(items)) {
     items.forEach((it, index) => {
       if (typeof it !== 'object' || it === null || Array.isArray(it)) {
-        out.push(findings(i01RequiredFields).fail(`items[${index}]`, 'Item is not a JSON object.', 'Each entry in items must be an object with the item fields.', { specRef: 'spec v1.12 §4.1.1' }));
+        out.push(
+          findings(i01RequiredFields).fail(
+            `items[${index}]`,
+            'Item is not a JSON object.',
+            'Each entry in items must be an object with the item fields.',
+            { specRef: 'spec v1.12 §4.1.1' },
+          ),
+        );
         return;
       }
       const ctx: RuleContext = { ...base, item: it as Obj, index };

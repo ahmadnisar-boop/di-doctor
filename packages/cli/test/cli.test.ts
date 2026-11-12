@@ -3,7 +3,10 @@ import { spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 
 const cli = (...args: string[]) => {
-  const r = spawnSync(process.execPath, ['--import', 'tsx', 'packages/cli/src/cli.ts', ...args], { encoding: 'utf8', env: { ...process.env, NO_COLOR: '1' } });
+  const r = spawnSync(process.execPath, ['--import', 'tsx', 'packages/cli/src/cli.ts', ...args], {
+    encoding: 'utf8',
+    env: { ...process.env, NO_COLOR: '1' },
+  });
   return { code: r.status, out: r.stdout, err: r.stderr };
 };
 
@@ -64,16 +67,23 @@ describe('CLI: simulate, stdin, rules, codes', () => {
   it('simulate prints an FBR-shaped body and exits 1 for a rejected payload', () => {
     const r = cli('--json', 'simulate', 'fixtures/invoices/tax-mismatch.json', '--env', 'sandbox');
     expect(r.code).toBe(1);
-    const parsed = JSON.parse(r.out) as { result: string; body: { validationResponse: { invoiceStatuses: { errorCode: string }[] } } };
+    const parsed = JSON.parse(r.out) as {
+      result: string;
+      body: { validationResponse: { invoiceStatuses: { errorCode: string }[] } };
+    };
     expect(parsed.result).toBe('invalid');
     expect(parsed.body.validationResponse.invoiceStatuses[0]?.errorCode).toBe('0104');
   });
   it('reads JSON from stdin with -', () => {
-    const r = spawnSync(process.execPath, ['--import', 'tsx', 'packages/cli/src/cli.ts', 'validate', '-', '--env', 'sandbox'], {
-      encoding: 'utf8',
-      input: readFileSync('fixtures/invoices/valid-sandbox-sn001.json', 'utf8'),
-      env: { ...process.env, NO_COLOR: '1' },
-    });
+    const r = spawnSync(
+      process.execPath,
+      ['--import', 'tsx', 'packages/cli/src/cli.ts', 'validate', '-', '--env', 'sandbox'],
+      {
+        encoding: 'utf8',
+        input: readFileSync('fixtures/invoices/valid-sandbox-sn001.json', 'utf8'),
+        env: { ...process.env, NO_COLOR: '1' },
+      },
+    );
     expect(r.status).toBe(0);
   });
   it('rules lists every rule; --markdown renders a table', () => {

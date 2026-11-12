@@ -1,7 +1,7 @@
 name: Release
 on:
   push:
-    tags: ["v*"]
+    tags: ['v*']
 
 permissions:
   contents: write
@@ -13,11 +13,11 @@ jobs:
     env:
       OWNER: ahmadnisar-boop
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: pnpm
@@ -43,8 +43,10 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
-          publish_mirror() {  # <package dir> <scoped name>
-            tmp=$(mktemp -d); cp -R "$1"/. "$tmp"/; cp README.md "$tmp"/README.md
+          publish_mirror() {  # <package dir> <scoped name>  (idempotent: skips a version that is already published)
+            v=$(node -p "require('./$1/package.json').version")
+            if npm view "$2@$v" version --registry https://npm.pkg.github.com >/dev/null 2>&1; then echo "$2@$v already published, skipping"; return 0; fi
+            tmp=$(mktemp -d); cp -R "$1"/. "$tmp"/; [ -f "$1/README.md" ] || cp README.md "$tmp"/README.md
             (cd "$tmp" \
               && npm pkg set name="$2" publishConfig.registry=https://npm.pkg.github.com \
               && npm pkg delete scripts.prepack devDependencies \
@@ -60,7 +62,10 @@ jobs:
         if: env.HAS_NPM_TOKEN == 'true'
         run: |
           echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
-          (cd packages/cli && cp ../../README.md README.md && npm pkg delete devDependencies && npm publish --access public --registry https://registry.npmjs.org)
+          v=$(node -p "require('./packages/cli/package.json').version")
+          if npm view "di-doctor@$v" version --registry https://registry.npmjs.org >/dev/null 2>&1; then echo "di-doctor@$v already on npmjs, skipping"; else
+            (cd packages/cli && cp ../../README.md README.md && npm pkg delete devDependencies && npm publish --access public --registry https://registry.npmjs.org)
+          fi
 
       - name: Extract changelog section
         run: |
@@ -74,7 +79,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "$GITHUB_REF_NAME" release/*.tgz \
-            --title "di-doctor $GITHUB_REF_NAME" \
-            --notes-file release/notes.md \
-            --verify-tag
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" release/*.tgz --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" release/*.tgz \
+              --title "di-doctor $GITHUB_REF_NAME" \
+              --notes-file release/notes.md \
+              --verify-tag
+          fi

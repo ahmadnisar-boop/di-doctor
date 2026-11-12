@@ -39,14 +39,20 @@ describe('serve', () => {
   it('valid sandbox post returns the FBR-shaped valid body with an invoice number', async () => {
     const r = await post('/di_data/v1/di/postinvoicedata_sb', invoice('valid-sandbox-sn001'));
     expect(r.status).toBe(200);
-    const body = (await r.json()) as { invoiceNumber: string; validationResponse: { status: string }; _simulator: unknown };
+    const body = (await r.json()) as {
+      invoiceNumber: string;
+      validationResponse: { status: string };
+      _simulator: unknown;
+    };
     expect(body.invoiceNumber).toBe('0000001DI1747119701593');
     expect(body.validationResponse.status).toBe('Valid');
     expect(body._simulator).toBeDefined();
   });
   it('tax mismatch returns the misleading-header shape with 0104 inside invoiceStatuses', async () => {
     const r = await post('/di_data/v1/di/postinvoicedata_sb', invoice('tax-mismatch'));
-    const body = (await r.json()) as { validationResponse: { statusCode: string; status: string; invoiceStatuses: { errorCode: string }[] } };
+    const body = (await r.json()) as {
+      validationResponse: { statusCode: string; status: string; invoiceStatuses: { errorCode: string }[] };
+    };
     expect(body.validationResponse.statusCode).toBe('00');
     expect(body.validationResponse.status).toBe('Invalid');
     expect(body.validationResponse.invoiceStatuses[0]?.errorCode).toBe('0104');
@@ -66,9 +72,17 @@ describe('serve options', () => {
     const { port } = await listen(s, { port: 0 });
     const b = `http://127.0.0.1:${port}`;
     try {
-      const wrong = await fetch(b + '/di_data/v1/di/postinvoicedata_sb', { method: 'POST', body: '{}', headers: { authorization: 'Bearer nope' } });
+      const wrong = await fetch(b + '/di_data/v1/di/postinvoicedata_sb', {
+        method: 'POST',
+        body: '{}',
+        headers: { authorization: 'Bearer nope' },
+      });
       expect(wrong.status).toBe(401);
-      const chaos = await fetch(b + '/di_data/v1/di/postinvoicedata_sb', { method: 'POST', body: '{}', headers: { authorization: 'Bearer secret' } });
+      const chaos = await fetch(b + '/di_data/v1/di/postinvoicedata_sb', {
+        method: 'POST',
+        body: '{}',
+        headers: { authorization: 'Bearer secret' },
+      });
       expect(chaos.status).toBe(500);
     } finally {
       await new Promise<void>((r) => s.close(() => r()));
@@ -76,7 +90,11 @@ describe('serve options', () => {
     const s2 = createServer({ strictShape: true, log: () => {} });
     const l2 = await listen(s2, { port: 0 });
     try {
-      const r = await fetch(`http://127.0.0.1:${l2.port}/di_data/v1/di/postinvoicedata_sb`, { method: 'POST', body: invoice('valid-sandbox-sn001'), headers: { authorization: 'Bearer x' } });
+      const r = await fetch(`http://127.0.0.1:${l2.port}/di_data/v1/di/postinvoicedata_sb`, {
+        method: 'POST',
+        body: invoice('valid-sandbox-sn001'),
+        headers: { authorization: 'Bearer x' },
+      });
       expect(await r.json()).not.toHaveProperty('_simulator');
     } finally {
       await new Promise<void>((r) => s2.close(() => r()));

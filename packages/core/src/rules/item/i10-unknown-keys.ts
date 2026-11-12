@@ -16,7 +16,9 @@ export const i10UnknownItemKeys: Rule = {
       return f.fail(
         `items[${index}].${k}`,
         near ? `"${k}" is not a DI item field; did you mean "${near}"?` : `"${k}" is not a DI item field.`,
-        near ? `Rename "${k}" to "${near}". Field names are case-sensitive (note "uoM", "hsCode").` : 'Remove the field or check its spelling against the spec sample.',
+        near
+          ? `Rename "${k}" to "${near}". Field names are case-sensitive (note "uoM", "hsCode").`
+          : 'Remove the field or check its spelling against the spec sample.',
         { severity: 'warning' },
       );
     });

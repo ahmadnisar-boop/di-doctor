@@ -42,7 +42,15 @@ describe('invoice.schema.json', () => {
 });
 
 describe('response.schema.json', () => {
-  const accepted = ['valid-post.json', 'valid-validate.json', 'invalid-header-null-statuses.json', 'invalid-misleading-header.json', 'valid-header-failed-item.json'];
-  for (const file of accepted) it(`${file} is accepted`, () => expect(responseSchema(fixture(`responses/${file}`))).toBe(true));
-  for (const file of ['unknown-shape.json', 'inner-only.json']) it(`${file} is rejected`, () => expect(responseSchema(fixture(`responses/${file}`))).toBe(false));
+  const accepted = [
+    'valid-post.json',
+    'valid-validate.json',
+    'invalid-header-null-statuses.json',
+    'invalid-misleading-header.json',
+    'valid-header-failed-item.json',
+  ];
+  for (const file of accepted)
+    it(`${file} is accepted`, () => expect(responseSchema(fixture(`responses/${file}`))).toBe(true));
+  for (const file of ['unknown-shape.json', 'inner-only.json'])
+    it(`${file} is rejected`, () => expect(responseSchema(fixture(`responses/${file}`))).toBe(false));
 });

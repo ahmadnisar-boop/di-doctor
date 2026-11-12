@@ -26,7 +26,20 @@ describe('listScenarios (spec §10)', () => {
   it('Manufacturer / Textile = base set + SN009', () => {
     const r = listScenarios('Manufacturer', 'Textile');
     if ('error' in r) throw new Error(r.error);
-    expect(r.scenarios.map((s) => s.id)).toEqual(['SN001', 'SN002', 'SN005', 'SN006', 'SN007', 'SN015', 'SN016', 'SN017', 'SN021', 'SN022', 'SN024', 'SN009']);
+    expect(r.scenarios.map((s) => s.id)).toEqual([
+      'SN001',
+      'SN002',
+      'SN005',
+      'SN006',
+      'SN007',
+      'SN015',
+      'SN016',
+      'SN017',
+      'SN021',
+      'SN022',
+      'SN024',
+      'SN009',
+    ]);
     expect(r.notes).toEqual([]);
   });
   it('Manufacturer / Steel is only the steel scenarios', () => {
@@ -60,11 +73,12 @@ describe('listScenarios (spec §10)', () => {
     }
   });
   it('every activity/sector pair resolves to known scenarios', () => {
-    for (const a of ACTIVITIES) for (const s of SECTORS) {
-      const r = listScenarios(a, s);
-      if ('error' in r) throw new Error(r.error);
-      expect(r.scenarios.length).toBeGreaterThan(0);
-      expect(new Set(r.scenarios.map((x) => x.id)).size).toBe(r.scenarios.length);
-    }
+    for (const a of ACTIVITIES)
+      for (const s of SECTORS) {
+        const r = listScenarios(a, s);
+        if ('error' in r) throw new Error(r.error);
+        expect(r.scenarios.length).toBeGreaterThan(0);
+        expect(new Set(r.scenarios.map((x) => x.id)).size).toBe(r.scenarios.length);
+      }
   });
 });

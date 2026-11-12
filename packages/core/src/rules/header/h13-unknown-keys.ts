@@ -14,11 +14,16 @@ export const h13UnknownHeaderKeys: Rule = {
     if (unknown.length === 0) return [f.pass('$', 'All header fields are known.')];
     return unknown.map((k) => {
       const near = nearestKey(k, known);
-      const typoNote = k === 'buyeRegistrationType' ? ' This is the typo from the spec field table; the samples use the correct spelling.' : '';
+      const typoNote =
+        k === 'buyeRegistrationType'
+          ? ' This is the typo from the spec field table; the samples use the correct spelling.'
+          : '';
       return f.fail(
         k,
         near ? `"${k}" is not a DI field; did you mean "${near}"?${typoNote}` : `"${k}" is not a DI field.`,
-        near ? `Rename "${k}" to "${near}". Field names are case-sensitive.` : 'Remove the field or check its spelling against the spec sample.',
+        near
+          ? `Rename "${k}" to "${near}". Field names are case-sensitive.`
+          : 'Remove the field or check its spelling against the spec sample.',
         { severity: 'warning' },
       );
     });

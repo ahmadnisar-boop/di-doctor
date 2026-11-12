@@ -12,7 +12,7 @@ updates:
     ignore:
       # 5.1.x has a reporter crash on Node 24 that hides failure details; stay on 5.0.x until fixed upstream.
       - dependency-name: vitest
-        versions: ["5.1.x"]
+        versions: ['5.1.x']
   - package-ecosystem: github-actions
     directory: /
     schedule:

@@ -10,8 +10,23 @@ export const h06BuyerRegistrationType: Rule = {
   check({ invoice }) {
     const f = findings(this);
     const v = invoice['buyerRegistrationType'];
-    if (!isNonEmptyString(v)) return [f.fail('buyerRegistrationType', 'buyerRegistrationType is missing or empty.', 'Set it to "Registered" or "Unregistered".', { errorCode: '0012' })];
-    if ((REGISTRATION_TYPES as readonly string[]).includes(v)) return [f.pass('buyerRegistrationType', `buyerRegistrationType is "${v}".`)];
-    return [f.fail('buyerRegistrationType', `buyerRegistrationType "${v}" is not recognised.`, 'Use exactly "Registered" or "Unregistered" (case-sensitive).')];
+    if (!isNonEmptyString(v))
+      return [
+        f.fail(
+          'buyerRegistrationType',
+          'buyerRegistrationType is missing or empty.',
+          'Set it to "Registered" or "Unregistered".',
+          { errorCode: '0012' },
+        ),
+      ];
+    if ((REGISTRATION_TYPES as readonly string[]).includes(v))
+      return [f.pass('buyerRegistrationType', `buyerRegistrationType is "${v}".`)];
+    return [
+      f.fail(
+        'buyerRegistrationType',
+        `buyerRegistrationType "${v}" is not recognised.`,
+        'Use exactly "Registered" or "Unregistered" (case-sensitive).',
+      ),
+    ];
   },
 };

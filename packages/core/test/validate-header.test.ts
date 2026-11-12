@@ -39,16 +39,21 @@ describe('H01 invoiceType', () => {
 describe('H02 invoiceDate', () => {
   it('pass', () => expect(verdicts(run(valid()), 'H02')).toEqual(['pass']));
   it('fail on DD-MM-YYYY', () => expect(verdicts(run(fixture('invoices/bad-date.json')), 'H02')).toEqual(['fail']));
-  it('fail on impossible date', () => expect(verdicts(run({ ...valid(), invoiceDate: '2025-02-30' }), 'H02')).toEqual(['fail']));
+  it('fail on impossible date', () =>
+    expect(verdicts(run({ ...valid(), invoiceDate: '2025-02-30' }), 'H02')).toEqual(['fail']));
   it('fail when missing', () => expect(verdicts(run({ ...valid(), invoiceDate: null }), 'H02')).toEqual(['fail']));
 });
 
 describe('H03 sellerNTNCNIC', () => {
   it('pass 7 digits', () => expect(verdicts(run(valid()), 'H03')).toEqual(['pass']));
-  it('pass 13 digits', () => expect(verdicts(run({ ...valid(), sellerNTNCNIC: '0000000000001' }), 'H03')).toEqual(['pass']));
-  it('cannot-verify 9 digits', () => expect(verdicts(run(fixture('invoices/nine-digit-ntn.json')), 'H03')).toEqual(['cannot-verify']));
-  it('fail on other length', () => expect(verdicts(run({ ...valid(), sellerNTNCNIC: '12345' }), 'H03')).toEqual(['fail']));
-  it('fail on non-digits', () => expect(verdicts(run({ ...valid(), sellerNTNCNIC: '00000-01' }), 'H03')).toEqual(['fail']));
+  it('pass 13 digits', () =>
+    expect(verdicts(run({ ...valid(), sellerNTNCNIC: '0000000000001' }), 'H03')).toEqual(['pass']));
+  it('cannot-verify 9 digits', () =>
+    expect(verdicts(run(fixture('invoices/nine-digit-ntn.json')), 'H03')).toEqual(['cannot-verify']));
+  it('fail on other length', () =>
+    expect(verdicts(run({ ...valid(), sellerNTNCNIC: '12345' }), 'H03')).toEqual(['fail']));
+  it('fail on non-digits', () =>
+    expect(verdicts(run({ ...valid(), sellerNTNCNIC: '00000-01' }), 'H03')).toEqual(['fail']));
   it('fail on JSON number', () => {
     const f = byRule(run({ ...valid(), sellerNTNCNIC: 1 }), 'H03')[0];
     expect(f?.verdict).toBe('fail');
@@ -58,7 +63,10 @@ describe('H03 sellerNTNCNIC', () => {
 
 describe('H04 seller name/address', () => {
   it('pass', () => expect(verdicts(run(valid()), 'H04')).toEqual(['pass', 'pass']));
-  it('fail when name missing', () => expect(errorsOf(run(fixture('invoices/missing-required-fields.json')), 'H04').map((f) => f.path)).toEqual(['sellerBusinessName']));
+  it('fail when name missing', () =>
+    expect(errorsOf(run(fixture('invoices/missing-required-fields.json')), 'H04').map((f) => f.path)).toEqual([
+      'sellerBusinessName',
+    ]));
 });
 
 describe('H05 sellerProvince', () => {
@@ -68,7 +76,8 @@ describe('H05 sellerProvince', () => {
 
 describe('H06 buyerRegistrationType', () => {
   it('pass', () => expect(verdicts(run(valid()), 'H06')).toEqual(['pass']));
-  it('fail on wrong casing', () => expect(errorsOf(run({ ...valid(), buyerRegistrationType: 'registered' }), 'H06')).toHaveLength(1));
+  it('fail on wrong casing', () =>
+    expect(errorsOf(run({ ...valid(), buyerRegistrationType: 'registered' }), 'H06')).toHaveLength(1));
   it('misspelled key: H13 warns with the right name, H06 reports the field missing', () => {
     const f = run(fixture('invoices/misspelled-buyer-key.json'));
     const w = warningsOf(f, 'H13')[0];
@@ -85,42 +94,62 @@ describe('H07 buyerNTNCNIC', () => {
     expect(f?.verdict).toBe('pass');
     expect(f?.message).toMatch(/unregistered/);
   });
-  it('fail when empty for registered buyer', () => expect(verdicts(run({ ...valid(), buyerNTNCNIC: '' }), 'H07')).toEqual(['fail']));
+  it('fail when empty for registered buyer', () =>
+    expect(verdicts(run({ ...valid(), buyerNTNCNIC: '' }), 'H07')).toEqual(['fail']));
   it('still checked when provided for unregistered buyer', () => {
-    expect(verdicts(run({ ...valid(), buyerRegistrationType: 'Unregistered', buyerNTNCNIC: '12' }), 'H07')).toEqual(['fail']);
+    expect(verdicts(run({ ...valid(), buyerRegistrationType: 'Unregistered', buyerNTNCNIC: '12' }), 'H07')).toEqual([
+      'fail',
+    ]);
   });
 });
 
 describe('H08 buyer name/address/province', () => {
-  it('pass + cannot-verify province', () => expect(verdicts(run(valid()), 'H08')).toEqual(['pass', 'pass', 'cannot-verify']));
-  it('fail when address missing', () => expect(errorsOf(run(fixture('invoices/missing-required-fields.json')), 'H08').map((f) => f.path)).toEqual(['buyerAddress']));
+  it('pass + cannot-verify province', () =>
+    expect(verdicts(run(valid()), 'H08')).toEqual(['pass', 'pass', 'cannot-verify']));
+  it('fail when address missing', () =>
+    expect(errorsOf(run(fixture('invoices/missing-required-fields.json')), 'H08').map((f) => f.path)).toEqual([
+      'buyerAddress',
+    ]));
 });
 
 describe('H09 self-invoicing', () => {
   it('pass', () => expect(verdicts(run(valid()), 'H09')).toEqual(['pass']));
-  it('fail when identical', () => expect(verdicts(run(fixture('invoices/self-invoice.json')), 'H09')).toEqual(['fail']));
-  it('not evaluated when buyer is empty', () => expect(byRule(run({ ...valid(), buyerNTNCNIC: '' }), 'H09')).toHaveLength(0));
+  it('fail when identical', () =>
+    expect(verdicts(run(fixture('invoices/self-invoice.json')), 'H09')).toEqual(['fail']));
+  it('not evaluated when buyer is empty', () =>
+    expect(byRule(run({ ...valid(), buyerNTNCNIC: '' }), 'H09')).toHaveLength(0));
 });
 
 describe('H10 invoiceRefNo for debit notes', () => {
-  it('pass with 22 chars', () => expect(verdicts(run(fixture('invoices/debit-note-valid.json')), 'H10')).toEqual(['pass']));
-  it('pass with 28 chars', () => expect(verdicts(run({ ...valid(), invoiceType: 'Debit Note', invoiceRefNo: '1'.repeat(28) }), 'H10')).toEqual(['pass']));
-  it('fail when missing', () => expect(verdicts(run(fixture('invoices/debit-note-missing-ref.json')), 'H10')).toEqual(['fail']));
-  it('fail on wrong length', () => expect(verdicts(run({ ...valid(), invoiceType: 'Debit Note', invoiceRefNo: 'INV-1' }), 'H10')).toEqual(['fail']));
+  it('pass with 22 chars', () =>
+    expect(verdicts(run(fixture('invoices/debit-note-valid.json')), 'H10')).toEqual(['pass']));
+  it('pass with 28 chars', () =>
+    expect(verdicts(run({ ...valid(), invoiceType: 'Debit Note', invoiceRefNo: '1'.repeat(28) }), 'H10')).toEqual([
+      'pass',
+    ]));
+  it('fail when missing', () =>
+    expect(verdicts(run(fixture('invoices/debit-note-missing-ref.json')), 'H10')).toEqual(['fail']));
+  it('fail on wrong length', () =>
+    expect(verdicts(run({ ...valid(), invoiceType: 'Debit Note', invoiceRefNo: 'INV-1' }), 'H10')).toEqual(['fail']));
   it('not evaluated for sale invoices', () => expect(byRule(run(valid()), 'H10')).toHaveLength(0));
 });
 
 describe('H11 scenarioId', () => {
   it('pass in sandbox', () => expect(verdicts(run(valid()), 'H11')).toEqual(['pass']));
-  it('fail in sandbox when missing', () => expect(verdicts(run({ ...valid(), scenarioId: undefined }), 'H11')).toEqual(['fail']));
-  it('fail in sandbox on SN029', () => expect(verdicts(run({ ...valid(), scenarioId: 'SN029' }), 'H11')).toEqual(['fail']));
-  it('pass in production when absent', () => expect(verdicts(run(fixture('invoices/valid-production.json'), production), 'H11')).toEqual(['pass']));
-  it('warning in production when present', () => expect(warningsOf(run(fixture('invoices/prod-with-scenario.json'), production), 'H11')).toHaveLength(1));
+  it('fail in sandbox when missing', () =>
+    expect(verdicts(run({ ...valid(), scenarioId: undefined }), 'H11')).toEqual(['fail']));
+  it('fail in sandbox on SN029', () =>
+    expect(verdicts(run({ ...valid(), scenarioId: 'SN029' }), 'H11')).toEqual(['fail']));
+  it('pass in production when absent', () =>
+    expect(verdicts(run(fixture('invoices/valid-production.json'), production), 'H11')).toEqual(['pass']));
+  it('warning in production when present', () =>
+    expect(warningsOf(run(fixture('invoices/prod-with-scenario.json'), production), 'H11')).toHaveLength(1));
 });
 
 describe('H12 items', () => {
   it('pass', () => expect(verdicts(run(valid()), 'H12')).toEqual(['pass']));
-  it('fail on empty array', () => expect(verdicts(run(fixture('invoices/missing-items.json')), 'H12')).toEqual(['fail']));
+  it('fail on empty array', () =>
+    expect(verdicts(run(fixture('invoices/missing-items.json')), 'H12')).toEqual(['fail']));
   it('fail when not an array', () => expect(verdicts(run({ ...valid(), items: {} }), 'H12')).toEqual(['fail']));
 });
 
@@ -135,22 +164,33 @@ describe('H13 unknown header keys', () => {
 });
 
 describe('H14 debit note vs original invoice', () => {
-  it('cannot-verify for debit notes', () => expect(verdicts(run(fixture('invoices/debit-note-valid.json')), 'H14')).toEqual(['cannot-verify']));
+  it('cannot-verify for debit notes', () =>
+    expect(verdicts(run(fixture('invoices/debit-note-valid.json')), 'H14')).toEqual(['cannot-verify']));
   it('not evaluated for sale invoices', () => expect(byRule(run(valid()), 'H14')).toHaveLength(0));
 });
 
 describe('H15 registration status', () => {
-  it('cannot-verify for seller and registered buyer', () => expect(byRule(run(valid()), 'H15').map((f) => f.path)).toEqual(['sellerNTNCNIC', 'buyerNTNCNIC']));
-  it('only seller for unregistered buyer', () => expect(byRule(run(fixture('invoices/valid-production.json'), production), 'H15').map((f) => f.path)).toEqual(['sellerNTNCNIC']));
+  it('cannot-verify for seller and registered buyer', () =>
+    expect(byRule(run(valid()), 'H15').map((f) => f.path)).toEqual(['sellerNTNCNIC', 'buyerNTNCNIC']));
+  it('only seller for unregistered buyer', () =>
+    expect(byRule(run(fixture('invoices/valid-production.json'), production), 'H15').map((f) => f.path)).toEqual([
+      'sellerNTNCNIC',
+    ]));
 });
 
 describe('H16 scenario applicability', () => {
   it('not evaluated without activity and sector', () => expect(byRule(run(valid()), 'H16')).toHaveLength(0));
-  it('pass when the scenario is in the §10 list', () => expect(verdicts(run(valid(), { environment: 'sandbox', activity: 'Manufacturer', sector: 'Textile' }), 'H16')).toEqual(['pass']));
+  it('pass when the scenario is in the §10 list', () =>
+    expect(
+      verdicts(run(valid(), { environment: 'sandbox', activity: 'Manufacturer', sector: 'Textile' }), 'H16'),
+    ).toEqual(['pass']));
   it('fail when it is not', () => {
     const f = errorsOf(run(valid(), { environment: 'sandbox', activity: 'Manufacturer', sector: 'Steel' }), 'H16')[0];
     expect(f?.message).toMatch(/SN001 is not in the scenario list/);
     expect(f?.fix).toMatch(/SN003, SN004, SN011/);
   });
-  it('warning for unknown activity', () => expect(warningsOf(run(valid(), { environment: 'sandbox', activity: 'Farmer', sector: 'Steel' }), 'H16')).toHaveLength(1));
+  it('warning for unknown activity', () =>
+    expect(
+      warningsOf(run(valid(), { environment: 'sandbox', activity: 'Farmer', sector: 'Steel' }), 'H16'),
+    ).toHaveLength(1));
 });

@@ -12,7 +12,11 @@
       "type": "object",
       "required": ["statusCode", "status"],
       "properties": {
-        "statusCode": { "type": "string", "enum": ["00", "01"], "description": "00 valid, 01 invalid at header level. Can be 00 while status is invalid (§4.1.5)." },
+        "statusCode": {
+          "type": "string",
+          "enum": ["00", "01"],
+          "description": "00 valid, 01 invalid at header level. Can be 00 while status is invalid (§4.1.5)."
+        },
         "status": { "type": "string", "description": "Valid / Invalid in varying casing." },
         "errorCode": { "type": ["string", "null"] },
         "error": { "type": ["string", "null"] },

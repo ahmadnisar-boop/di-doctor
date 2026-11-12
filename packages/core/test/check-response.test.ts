@@ -23,7 +23,9 @@ describe('checkResponse', () => {
     const r = checkResponse(fixture('responses/invalid-header-null-statuses.json'));
     expect(r.overall).toBe('invalid');
     expect(r.items).toHaveLength(0);
-    expect(r.problems).toEqual([{ where: 'header', errorCode: '0052', message: 'Provide proper HS Code with invoice no. null' }]);
+    expect(r.problems).toEqual([
+      { where: 'header', errorCode: '0052', message: 'Provide proper HS Code with invoice no. null' },
+    ]);
   });
 
   it('misleading header: statusCode 00 but status invalid (spec §4.1.5)', () => {
@@ -43,7 +45,9 @@ describe('checkResponse', () => {
   });
 
   it('status casing is ignored', () => {
-    const body = { validationResponse: { statusCode: '00', status: 'VALID', invoiceStatuses: [{ itemSNo: '1', status: 'valid' }] } };
+    const body = {
+      validationResponse: { statusCode: '00', status: 'VALID', invoiceStatuses: [{ itemSNo: '1', status: 'valid' }] },
+    };
     expect(checkResponse(body).overall).toBe('valid');
   });
 

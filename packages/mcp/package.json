@@ -3,7 +3,31 @@
   "version": "0.1.0",
   "description": "MCP server exposing DI Doctor tools (unofficial Pakistan FBR Digital Invoicing toolkit).",
   "license": "MIT",
+  "author": "Ahmad Nisar <ahmadnisar3790@gmail.com>",
+  "homepage": "https://github.com/ahmadnisar-boop/di-doctor#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ahmadnisar-boop/di-doctor",
+    "directory": "packages/mcp"
+  },
+  "bugs": {
+    "url": "https://github.com/ahmadnisar-boop/di-doctor/issues"
+  },
+  "keywords": [
+    "fbr",
+    "pakistan",
+    "digital-invoicing",
+    "mcp",
+    "model-context-protocol",
+    "sales-tax"
+  ],
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -22,10 +46,5 @@
     "@di-doctor/core": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.32.2",
     "zod": "^4.6.7"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ahmadnisar-boop/di-doctor",
-    "directory": "packages/mcp"
   }
 }

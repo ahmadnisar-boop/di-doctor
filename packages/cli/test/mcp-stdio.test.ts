@@ -7,7 +7,13 @@ let client: Client;
 
 beforeAll(async () => {
   client = new Client({ name: 'test', version: '0.0.0' });
-  await client.connect(new StdioClientTransport({ command: process.execPath, args: ['--import', 'tsx', 'packages/cli/src/cli.ts', 'mcp'], stderr: 'pipe' }));
+  await client.connect(
+    new StdioClientTransport({
+      command: process.execPath,
+      args: ['--import', 'tsx', 'packages/cli/src/cli.ts', 'mcp'],
+      stderr: 'pipe',
+    }),
+  );
 });
 afterAll(async () => {
   await client.close();

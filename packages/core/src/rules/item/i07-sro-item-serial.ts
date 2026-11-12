@@ -11,7 +11,15 @@ export const i07SroItemSerial: Rule = {
     if (!isNonEmptyString(item!['sroScheduleNo'])) return [];
     const f = findings(this);
     const path = `items[${index}].sroItemSerialNo`;
-    if (isNonEmptyString(item!['sroItemSerialNo'])) return [f.pass(path, 'sroScheduleNo and sroItemSerialNo are both set.')];
-    return [f.fail(path, 'sroScheduleNo is set but sroItemSerialNo is empty.', 'FBR usually expects the SRO item serial number alongside the schedule. Get the value from the SRO item reference API.', { severity: 'warning' })];
+    if (isNonEmptyString(item!['sroItemSerialNo']))
+      return [f.pass(path, 'sroScheduleNo and sroItemSerialNo are both set.')];
+    return [
+      f.fail(
+        path,
+        'sroScheduleNo is set but sroItemSerialNo is empty.',
+        'FBR usually expects the SRO item serial number alongside the schedule. Get the value from the SRO item reference API.',
+        { severity: 'warning' },
+      ),
+    ];
   },
 };

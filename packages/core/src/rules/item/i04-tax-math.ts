@@ -24,7 +24,13 @@ export const i04TaxMath: Rule = {
 
     const pct = parseSimpleRate(rate);
     if (pct === null) {
-      return [f.cannotVerify(p('rate'), `rate "${String(rate)}" is not a simple percentage.`, 'Compound or named rates (for example "18% along with rupees 60 per kilogram", or "Exempt") cannot be recomputed offline.')];
+      return [
+        f.cannotVerify(
+          p('rate'),
+          `rate "${String(rate)}" is not a simple percentage.`,
+          'Compound or named rates (for example "18% along with rupees 60 per kilogram", or "Exempt") cannot be recomputed offline.',
+        ),
+      ];
     }
     const st = getSaleType(item!['saleType']);
     if (st && st.taxBase !== 'simple-percent') {
@@ -37,20 +43,44 @@ export const i04TaxMath: Rule = {
       return [f.cannotVerify(p('salesTaxApplicable'), `Tax math not checked for sale type "${st.saleType}".`, why)];
     }
     if (!st) {
-      return [f.cannotVerify(p('salesTaxApplicable'), 'Tax math not checked: sale type is not in the §9 list.', 'DI Doctor only knows the tax base for the sale types listed in spec §9.')];
+      return [
+        f.cannotVerify(
+          p('salesTaxApplicable'),
+          'Tax math not checked: sale type is not in the §9 list.',
+          'DI Doctor only knows the tax base for the sale types listed in spec §9.',
+        ),
+      ];
     }
     const discount = item!['discount'];
     if (isNum(discount) && discount !== 0) {
-      return [f.cannotVerify(p('salesTaxApplicable'), 'Tax math not checked because discount is non-zero.', 'The spec does not say whether the rate applies before or after discount.')];
+      return [
+        f.cannotVerify(
+          p('salesTaxApplicable'),
+          'Tax math not checked because discount is non-zero.',
+          'The spec does not say whether the rate applies before or after discount.',
+        ),
+      ];
     }
     const fixed = item!['fixedNotifiedValueOrRetailPrice'];
     if (isNum(fixed) && fixed !== 0) {
-      return [f.cannotVerify(p('salesTaxApplicable'), 'Tax math not checked because fixedNotifiedValueOrRetailPrice is non-zero.', 'A notified or retail price usually changes the tax base (Third Schedule, error 0102); the spec does not give the formula.')];
+      return [
+        f.cannotVerify(
+          p('salesTaxApplicable'),
+          'Tax math not checked because fixedNotifiedValueOrRetailPrice is non-zero.',
+          'A notified or retail price usually changes the tax base (Third Schedule, error 0102); the spec does not give the formula.',
+        ),
+      ];
     }
     const tol = options.taxTolerance ?? DEFAULT_TAX_TOLERANCE;
     const expected = round2((value * pct) / 100);
     const diff = Math.abs(tax - expected);
-    if (diff <= tol) return [f.pass(p('salesTaxApplicable'), `salesTaxApplicable ${tax.toFixed(2)} matches ${pct}% of ${value.toFixed(2)} (±${tol.toFixed(2)}).`)];
+    if (diff <= tol)
+      return [
+        f.pass(
+          p('salesTaxApplicable'),
+          `salesTaxApplicable ${tax.toFixed(2)} matches ${pct}% of ${value.toFixed(2)} (±${tol.toFixed(2)}).`,
+        ),
+      ];
     return [
       f.fail(
         p('salesTaxApplicable'),

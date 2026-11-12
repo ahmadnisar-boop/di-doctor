@@ -36,7 +36,10 @@ export const ROUTE_PATHS = Object.keys(ROUTES);
 
 function send(res: ServerResponse, status: number, body: unknown): void {
   const text = JSON.stringify(body, null, 2);
-  res.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'content-length': Buffer.byteLength(text) });
+  res.writeHead(status, {
+    'content-type': 'application/json; charset=utf-8',
+    'content-length': Buffer.byteLength(text),
+  });
   res.end(text);
 }
 
@@ -66,7 +69,9 @@ export function createServer(opts: ServeOptions = {}): Server {
     }
     const route = ROUTES[path];
     if (!route) {
-      send(res, 404, { error: `Unknown path ${path}. The simulator serves: ${ROUTE_PATHS.join(', ')} and GET /_health.` });
+      send(res, 404, {
+        error: `Unknown path ${path}. The simulator serves: ${ROUTE_PATHS.join(', ')} and GET /_health.`,
+      });
       return;
     }
     if (req.method !== 'POST') {
@@ -80,7 +85,10 @@ export function createServer(opts: ServeOptions = {}): Server {
     const token = m?.[1];
     if (!token || (opts.token !== undefined && token !== opts.token)) {
       log(`${path} → 401 (missing or wrong Bearer token)`);
-      send(res, 401, { error: 'Unauthorized', hint: 'Send "Authorization: Bearer <token>". The real API routes sandbox vs production by the token; this simulator routes by path.' });
+      send(res, 401, {
+        error: 'Unauthorized',
+        hint: 'Send "Authorization: Bearer <token>". The real API routes sandbox vs production by the token; this simulator routes by path.',
+      });
       return;
     }
 
@@ -110,7 +118,9 @@ export function createServer(opts: ServeOptions = {}): Server {
       ...(opts.sector !== undefined ? { sector: opts.sector } : {}),
     });
     const codes = r.errors.map((e) => `${e.ruleId}${e.errorCode ? `/${e.errorCode}` : ''}`).join(', ');
-    log(`${path} → ${r.result.toUpperCase()}${codes ? ` [${codes}]` : ''}${r.diagnostics.length ? ` (${r.diagnostics.length} diagnostics)` : ''}`);
+    log(
+      `${path} → ${r.result.toUpperCase()}${codes ? ` [${codes}]` : ''}${r.diagnostics.length ? ` (${r.diagnostics.length} diagnostics)` : ''}`,
+    );
     send(res, r.httpStatus, r.body);
   });
 }

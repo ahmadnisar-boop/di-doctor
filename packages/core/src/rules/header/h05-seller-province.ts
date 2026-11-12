@@ -9,7 +9,16 @@ export const h05SellerProvince: Rule = {
   check({ invoice }) {
     const f = findings(this);
     const v = invoice['sellerProvince'];
-    if (!isNonEmptyString(v)) return [f.fail('sellerProvince', 'sellerProvince is missing or empty.', 'Provide the province name as listed by FBR.')];
-    return [f.cannotVerify('sellerProvince', `Seller province is "${v}".`, 'Province names come from the FBR province reference API, which needs a token. Not checked offline.')];
+    if (!isNonEmptyString(v))
+      return [
+        f.fail('sellerProvince', 'sellerProvince is missing or empty.', 'Provide the province name as listed by FBR.'),
+      ];
+    return [
+      f.cannotVerify(
+        'sellerProvince',
+        `Seller province is "${v}".`,
+        'Province names come from the FBR province reference API, which needs a token. Not checked offline.',
+      ),
+    ];
   },
 };

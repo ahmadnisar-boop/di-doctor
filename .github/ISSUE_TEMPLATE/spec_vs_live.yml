@@ -1,11 +1,11 @@
 name: FBR behaved differently from the spec
 description: The live sandbox or production API accepted or rejected something that DI Doctor judged the other way. The most valuable report we can get.
-title: "[spec vs live] "
-labels: ["spec-vs-live"]
+title: '[spec vs live] '
+labels: ['spec-vs-live']
 body:
   - type: markdown
     attributes:
-      value: "Please replace every real NTN/CNIC/STRN with fake values (`0000001`, `1111111111111`) and remove tokens before posting."
+      value: 'Please replace every real NTN/CNIC/STRN with fake values (`0000001`, `1111111111111`) and remove tokens before posting.'
   - type: dropdown
     id: environment
     attributes:
@@ -37,4 +37,4 @@ body:
     id: specref
     attributes:
       label: Spec section you believe applies (optional)
-      placeholder: "spec v1.12 §7 (0052)"
+      placeholder: 'spec v1.12 §7 (0052)'

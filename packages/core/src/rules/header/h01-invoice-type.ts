@@ -11,11 +11,31 @@ export const h01InvoiceType: Rule = {
   check({ invoice }) {
     const f = findings(this);
     const v = invoice['invoiceType'];
-    if (!isNonEmptyString(v)) return [f.fail('invoiceType', 'invoiceType is missing or empty.', 'Set invoiceType to "Sale Invoice" or "Debit Note".', { errorCode: '0011' })];
+    if (!isNonEmptyString(v))
+      return [
+        f.fail(
+          'invoiceType',
+          'invoiceType is missing or empty.',
+          'Set invoiceType to "Sale Invoice" or "Debit Note".',
+          { errorCode: '0011' },
+        ),
+      ];
     if ((INVOICE_TYPES as readonly string[]).includes(v)) return [f.pass('invoiceType', `invoiceType is "${v}".`)];
     if (v === 'Sales Invoice') {
-      return [f.cannotVerify('invoiceType', 'invoiceType is "Sales Invoice".', 'The spec field table lists "Sales Invoice" but every sample and the document-type reference list use "Sale Invoice". We recommend "Sale Invoice". See docs/spec-traps.md.')];
+      return [
+        f.cannotVerify(
+          'invoiceType',
+          'invoiceType is "Sales Invoice".',
+          'The spec field table lists "Sales Invoice" but every sample and the document-type reference list use "Sale Invoice". We recommend "Sale Invoice". See docs/spec-traps.md.',
+        ),
+      ];
     }
-    return [f.fail('invoiceType', `invoiceType "${v}" is not recognised.`, 'Use exactly "Sale Invoice" or "Debit Note" (case-sensitive).')];
+    return [
+      f.fail(
+        'invoiceType',
+        `invoiceType "${v}" is not recognised.`,
+        'Use exactly "Sale Invoice" or "Debit Note" (case-sensitive).',
+      ),
+    ];
   },
 };

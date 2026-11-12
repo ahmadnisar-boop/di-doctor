@@ -10,6 +10,12 @@ export const i12TotalValues: Rule = {
   check({ item, index }) {
     if (!isNum(item!['totalValues'])) return [];
     const f = findings(this);
-    return [f.cannotVerify(`items[${index}].totalValues`, 'totalValues not checked.', 'The spec describes it as the total including tax but gives no formula, and its own sample sends 0.00 next to a 1000.00 value. Copy what FBR accepted for you in sandbox.')];
+    return [
+      f.cannotVerify(
+        `items[${index}].totalValues`,
+        'totalValues not checked.',
+        'The spec describes it as the total including tax but gives no formula, and its own sample sends 0.00 next to a 1000.00 value. Copy what FBR accepted for you in sandbox.',
+      ),
+    ];
   },
 };

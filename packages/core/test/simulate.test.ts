@@ -4,10 +4,16 @@ import { simulate, formatPkt, checkResponse, validateInvoice } from '../src/inde
 import { fixture } from './helpers.js';
 
 const NOW = Date.UTC(2025, 4, 13, 7, 1, 41, 593); // 2025-05-13 12:01:41 PKT
-const sb = (over: Partial<Parameters<typeof simulate>[1]> = {}) => ({ environment: 'sandbox' as const, now: NOW, endpoint: 'post' as const, ...over });
+const sb = (over: Partial<Parameters<typeof simulate>[1]> = {}) => ({
+  environment: 'sandbox' as const,
+  now: NOW,
+  endpoint: 'post' as const,
+  ...over,
+});
 
 describe('formatPkt', () => {
-  it('formats in Pakistan Standard Time like the spec samples', () => expect(formatPkt(NOW)).toBe('2025-05-13 12:01:41'));
+  it('formats in Pakistan Standard Time like the spec samples', () =>
+    expect(formatPkt(NOW)).toBe('2025-05-13 12:01:41'));
 });
 
 describe('simulate: valid invoice', () => {
@@ -15,7 +21,12 @@ describe('simulate: valid invoice', () => {
     const r = simulate(fixture('invoices/valid-sandbox-sn001.json'), sb());
     expect(r.result).toBe('valid');
     expect(r.errors).toEqual([]);
-    const body = r.body as { invoiceNumber: string; dated: string; validationResponse: Record<string, unknown>; _simulator: unknown };
+    const body = r.body as {
+      invoiceNumber: string;
+      dated: string;
+      validationResponse: Record<string, unknown>;
+      _simulator: unknown;
+    };
     expect(body.invoiceNumber).toBe(`0000001DI${NOW}`);
     expect(body.invoiceNumber).toHaveLength(22);
     expect(body.dated).toBe('2025-05-13 12:01:41');
@@ -23,7 +34,9 @@ describe('simulate: valid invoice', () => {
       statusCode: '00',
       status: 'Valid',
       error: '',
-      invoiceStatuses: [{ itemSNo: '1', statusCode: '00', status: 'Valid', invoiceNo: `0000001DI${NOW}-1`, errorCode: '', error: '' }],
+      invoiceStatuses: [
+        { itemSNo: '1', statusCode: '00', status: 'Valid', invoiceNo: `0000001DI${NOW}-1`, errorCode: '', error: '' },
+      ],
     });
     expect(body._simulator).toBeDefined();
   });
@@ -43,7 +56,9 @@ describe('simulate: valid invoice', () => {
     });
   });
   it('strictShape drops the metadata', () => {
-    expect(simulate(fixture('invoices/valid-sandbox-sn001.json'), sb({ strictShape: true })).body).not.toHaveProperty('_simulator');
+    expect(simulate(fixture('invoices/valid-sandbox-sn001.json'), sb({ strictShape: true })).body).not.toHaveProperty(
+      '_simulator',
+    );
   });
   it('diagnostics carry the cannot-verify findings', () => {
     const r = simulate(fixture('invoices/valid-sandbox-sn001.json'), sb());
@@ -66,7 +81,9 @@ describe('simulate: header-level rejection (§4.1.4)', () => {
   it('non-object payload is a header-level rejection', () => {
     const r = simulate('nope', sb());
     expect(r.result).toBe('invalid');
-    expect((r.body as { validationResponse: { invoiceStatuses: unknown } }).validationResponse.invoiceStatuses).toBeNull();
+    expect(
+      (r.body as { validationResponse: { invoiceStatuses: unknown } }).validationResponse.invoiceStatuses,
+    ).toBeNull();
   });
   it('empty items list is a header-level rejection with no documented code', () => {
     const r = simulate(fixture('invoices/missing-items.json'), sb());
@@ -80,22 +97,40 @@ describe('simulate: item-level rejection (§4.1.5)', () => {
   it('reproduces the misleading header: statusCode 00, status Invalid, error inside invoiceStatuses', () => {
     const r = simulate(fixture('invoices/tax-mismatch.json'), sb());
     expect(r.result).toBe('invalid');
-    const vr = (r.body as { validationResponse: { statusCode: string; status: string; invoiceStatuses: Record<string, unknown>[] } }).validationResponse;
+    const vr = (
+      r.body as {
+        validationResponse: { statusCode: string; status: string; invoiceStatuses: Record<string, unknown>[] };
+      }
+    ).validationResponse;
     expect(vr.statusCode).toBe('00');
     expect(vr.status).toBe('Invalid');
-    expect(vr.invoiceStatuses[0]).toMatchObject({ itemSNo: '1', statusCode: '01', status: 'Invalid', invoiceNo: null, errorCode: '0104' });
+    expect(vr.invoiceStatuses[0]).toMatchObject({
+      itemSNo: '1',
+      statusCode: '01',
+      status: 'Invalid',
+      invoiceNo: null,
+      errorCode: '0104',
+    });
   });
   it('multi-item: only the bad item fails, others Valid, no invoice numbers', () => {
     const r = simulate(fixture('invoices/multi-item-one-bad.json'), sb());
-    const st = (r.body as { validationResponse: { invoiceStatuses: Record<string, unknown>[] } }).validationResponse.invoiceStatuses;
+    const st = (r.body as { validationResponse: { invoiceStatuses: Record<string, unknown>[] } }).validationResponse
+      .invoiceStatuses;
     expect(st.map((s) => s['status'])).toEqual(['Valid', 'Invalid', 'Valid']);
     expect(st.every((s) => s['invoiceNo'] === null)).toBe(true);
   });
   it('validate endpoint uses null error codes for valid items (§4.2.4)', () => {
     const r = simulate(fixture('invoices/multi-item-one-bad.json'), sb({ endpoint: 'validate' }));
-    const st = (r.body as { validationResponse: { invoiceStatuses: Record<string, unknown>[]; errorCode: unknown } }).validationResponse;
+    const st = (r.body as { validationResponse: { invoiceStatuses: Record<string, unknown>[]; errorCode: unknown } })
+      .validationResponse;
     expect(st.errorCode).toBeNull();
-    expect(st.invoiceStatuses[0]).toEqual({ itemSNo: '1', statusCode: '00', status: 'Valid', errorCode: null, error: '' });
+    expect(st.invoiceStatuses[0]).toEqual({
+      itemSNo: '1',
+      statusCode: '00',
+      status: 'Valid',
+      errorCode: null,
+      error: '',
+    });
     expect(st.invoiceStatuses[1]).not.toHaveProperty('invoiceNo');
   });
   it('warnings never cause a rejection', () => {

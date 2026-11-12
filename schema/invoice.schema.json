@@ -21,10 +21,7 @@
   "properties": {
     "invoiceType": {
       "type": "string",
-      "enum": [
-        "Sale Invoice",
-        "Debit Note"
-      ],
+      "enum": ["Sale Invoice", "Debit Note"],
       "description": "The spec's field table says \"Sales Invoice\" but every sample and the document-type list use \"Sale Invoice\"."
     },
     "invoiceDate": {
@@ -68,10 +65,7 @@
     },
     "buyerRegistrationType": {
       "type": "string",
-      "enum": [
-        "Registered",
-        "Unregistered"
-      ]
+      "enum": ["Registered", "Unregistered"]
     },
     "invoiceRefNo": {
       "type": "string",
@@ -98,14 +92,10 @@
             "const": "Registered"
           }
         },
-        "required": [
-          "buyerRegistrationType"
-        ]
+        "required": ["buyerRegistrationType"]
       },
       "then": {
-        "required": [
-          "buyerNTNCNIC"
-        ],
+        "required": ["buyerNTNCNIC"],
         "properties": {
           "buyerNTNCNIC": {
             "type": "string",
@@ -121,14 +111,10 @@
             "const": "Debit Note"
           }
         },
-        "required": [
-          "invoiceType"
-        ]
+        "required": ["invoiceType"]
       },
       "then": {
-        "required": [
-          "invoiceRefNo"
-        ],
+        "required": ["invoiceRefNo"],
         "properties": {
           "invoiceRefNo": {
             "type": "string",

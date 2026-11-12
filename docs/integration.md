@@ -44,7 +44,13 @@ Set your application's DI base URL to `http://127.0.0.1:8787` and keep the FBR p
 
 ```ts
 import {
-  validateInvoice, checkResponse, simulate, explainCode, explainResponse, listScenarios, RULES,
+  validateInvoice,
+  checkResponse,
+  simulate,
+  explainCode,
+  explainResponse,
+  listScenarios,
+  RULES,
 } from 'di-doctor'; // or '@di-doctor/core'
 
 // 1. pre-flight
@@ -74,17 +80,18 @@ Validate payloads with any JSON Schema 2020-12 validator using [`schema/invoice.
 claude mcp add di-doctor -- npx di-doctor mcp
 ```
 
-| Tool | Input | Output |
-|---|---|---|
-| `di_validate_invoice` | invoice (object or JSON string), environment, optional taxTolerance/activity/sector | findings + summary |
-| `di_check_response` | response, optional httpStatus | overall verdict, problems, warnings |
-| `di_explain_error` | code, or response | explanations |
-| `di_list_scenarios` | activity, sector | scenarios with expected sale types |
-| `di_simulate_response` | invoice, environment, optional endpoint/strictShape | simulated FBR response |
+| Tool                   | Input                                                                               | Output                              |
+| ---------------------- | ----------------------------------------------------------------------------------- | ----------------------------------- |
+| `di_validate_invoice`  | invoice (object or JSON string), environment, optional taxTolerance/activity/sector | findings + summary                  |
+| `di_check_response`    | response, optional httpStatus                                                       | overall verdict, problems, warnings |
+| `di_explain_error`     | code, or response                                                                   | explanations                        |
+| `di_list_scenarios`    | activity, sector                                                                    | scenarios with expected sale types  |
+| `di_simulate_response` | invoice, environment, optional endpoint/strictShape                                 | simulated FBR response              |
 
 ## CI
 
 ```yaml
 - run: npx di-doctor validate fixtures/my-invoice.json --env sandbox
 ```
+
 Fails the job on `error` findings. Combine with `di-doctor serve &` to run your integration tests against the simulator.

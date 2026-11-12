@@ -13,7 +13,14 @@ export const i05WithheldAtSource: Rule = {
     if (!isNum(w) || !isNum(tax)) return [];
     const f = findings(this);
     const path = `items[${index}].salesTaxWithheldAtSource`;
-    if (w === 0 || Math.abs(w - tax) < 0.005) return [f.pass(path, 'salesTaxWithheldAtSource is 0 or equals salesTaxApplicable.')];
-    return [f.fail(path, `salesTaxWithheldAtSource ${w.toFixed(2)} is neither 0 nor equal to salesTaxApplicable ${tax.toFixed(2)}.`, 'Set it to 0 or to exactly the sales tax amount.')];
+    if (w === 0 || Math.abs(w - tax) < 0.005)
+      return [f.pass(path, 'salesTaxWithheldAtSource is 0 or equals salesTaxApplicable.')];
+    return [
+      f.fail(
+        path,
+        `salesTaxWithheldAtSource ${w.toFixed(2)} is neither 0 nor equal to salesTaxApplicable ${tax.toFixed(2)}.`,
+        'Set it to 0 or to exactly the sales tax amount.',
+      ),
+    ];
   },
 };

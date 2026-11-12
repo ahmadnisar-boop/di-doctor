@@ -8,6 +8,11 @@ export const h03SellerId: Rule = {
   level: 'header',
   errorCode: '0108',
   check({ invoice }) {
-    return [checkRegistrationNumber(findings(this), 'sellerNTNCNIC', invoice['sellerNTNCNIC'], { missing: '0108', invalid: '0108' })];
+    return [
+      checkRegistrationNumber(findings(this), 'sellerNTNCNIC', invoice['sellerNTNCNIC'], {
+        missing: '0108',
+        invalid: '0108',
+      }),
+    ];
   },
 };

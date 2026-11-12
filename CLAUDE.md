@@ -1,9 +1,10 @@
 # CLAUDE.md — DI Doctor
 
 Unofficial, open-source developer toolkit for Pakistan's FBR Digital Invoicing (DI) API.
-Full background, research and decisions: `docs/PROJECT_CONTEXT.md` — read it before planning.
+Background and design decisions: `docs/DESIGN.md` — read it before planning.
 
 ## What we build (v1)
+
 - `check-response` — read FBR responses safely (item-level errors, misleading status codes)
 - `validate` — offline pre-flight checks on an invoice JSON
 - `explain` — FBR error code / response → plain English cause + fix
@@ -12,6 +13,7 @@ Full background, research and decisions: `docs/PROJECT_CONTEXT.md` — read it b
 - Published JSON Schema so any language can validate
 
 ## Hard rules
+
 1. **Spec is the source of truth.** Source: FBR "Technical Specification for DI API" v1.12 (local copy in `spec/`, git-ignored). Never invent a rule. Every validation rule cites its spec section in a code comment, e.g. `// spec v1.12 §4.1.2`.
 2. **Never copy spec text** into the repo (error tables, descriptions). Write explanations in our own words and link to the official document.
 3. **Three verdicts, never guess:** `pass`, `fail`, `cannot-verify`. If a rule needs data we don't have (e.g. reference APIs), return `cannot-verify` with a reason.
@@ -24,11 +26,13 @@ Full background, research and decisions: `docs/PROJECT_CONTEXT.md` — read it b
 10. Don't name the employer or use any employer code/data anywhere in this repo.
 
 ## Tech
+
 - TypeScript, Node.js LTS, pnpm workspaces monorepo: `packages/core`, `packages/cli`, `packages/mcp`
 - Tests: vitest. Build: tsup. CLI: commander. MCP: official `@modelcontextprotocol/sdk`.
 - Use current stable versions; check before adding any dependency. Keep dependencies minimal.
 
 ## Workflow
+
 - Start every non-trivial task in Plan Mode and wait for approval.
 - Small commits with clear messages. Ask before pushing.
 - Run `pnpm test` and `pnpm lint` before saying a task is done.

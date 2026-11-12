@@ -18,6 +18,12 @@ export const i11SaleTypeKnown: Rule = {
       const note = st.saleType === v.trim() ? '' : ` (the spec table spells it "${st.saleType}")`;
       return [f.pass(path, `saleType "${v}" is listed in the spec${note}.`)];
     }
-    return [f.cannotVerify(path, `saleType "${v}" is not one of the 28 sale types in spec §9.`, 'FBR\'s full transaction-type list comes from the reference API (§5.5) and may contain more values. If this is a typo, FBR will answer with error 0013.')];
+    return [
+      f.cannotVerify(
+        path,
+        `saleType "${v}" is not one of the 28 sale types in spec §9.`,
+        "FBR's full transaction-type list comes from the reference API (§5.5) and may contain more values. If this is a typo, FBR will answer with error 0013.",
+      ),
+    ];
   },
 };

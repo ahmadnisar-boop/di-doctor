@@ -12,9 +12,22 @@ export const h10DebitNoteRef: Rule = {
     if (invoice['invoiceType'] !== 'Debit Note') return [];
     const f = findings(this);
     const v = invoice['invoiceRefNo'];
-    if (!isNonEmptyString(v)) return [f.fail('invoiceRefNo', 'invoiceRefNo is required for a Debit Note.', 'Put the FBR invoice number of the original invoice in invoiceRefNo.')];
+    if (!isNonEmptyString(v))
+      return [
+        f.fail(
+          'invoiceRefNo',
+          'invoiceRefNo is required for a Debit Note.',
+          'Put the FBR invoice number of the original invoice in invoiceRefNo.',
+        ),
+      ];
     const len = v.trim().length;
     if (len === 22 || len === 28) return [f.pass('invoiceRefNo', `invoiceRefNo has ${len} characters.`)];
-    return [f.fail('invoiceRefNo', `invoiceRefNo has ${len} characters; the spec says 22 (NTN-based) or 28 (CNIC-based).`, 'Use the full FBR-issued invoice number of the original invoice.')];
+    return [
+      f.fail(
+        'invoiceRefNo',
+        `invoiceRefNo has ${len} characters; the spec says 22 (NTN-based) or 28 (CNIC-based).`,
+        'Use the full FBR-issued invoice number of the original invoice.',
+      ),
+    ];
   },
 };

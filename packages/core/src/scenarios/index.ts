@@ -12,7 +12,12 @@ export const ACTIVITIES: string[] = activityMap.activities;
 export const SECTORS: string[] = activityMap.sectors;
 export const RETAILER_ONLY = ['SN026', 'SN027', 'SN028'];
 
-const norm = (s: string) => s.trim().toLowerCase().replace(/\s*\/\s*/g, '/').replace(/\s+/g, ' ');
+const norm = (s: string) =>
+  s
+    .trim()
+    .toLowerCase()
+    .replace(/\s*\/\s*/g, '/')
+    .replace(/\s+/g, ' ');
 const resolve = (list: string[], v: string): string | undefined => list.find((x) => norm(x) === norm(v));
 
 export function getScenario(id: string): ScenarioInfo | undefined {
@@ -37,13 +42,24 @@ export function listScenarios(activity: string, sector: string): ScenarioListRes
   const a = resolve(ACTIVITIES, activity);
   const s = resolve(SECTORS, sector);
   if (!a || !s) {
-    const what = !a && !s ? `activity "${activity}" and sector "${sector}"` : !a ? `activity "${activity}"` : `sector "${sector}"`;
-    return { error: `Unknown ${what}. Use one of the values listed (spec v${SPEC_VERSION} §10).`, activities: ACTIVITIES, sectors: SECTORS };
+    const what =
+      !a && !s ? `activity "${activity}" and sector "${sector}"` : !a ? `activity "${activity}"` : `sector "${sector}"`;
+    return {
+      error: `Unknown ${what}. Use one of the values listed (spec v${SPEC_VERSION} §10).`,
+      activities: ACTIVITIES,
+      sectors: SECTORS,
+    };
   }
   const ids = map[a]?.[s] ?? [];
   const list = ids.map((id) => getScenario(id)).filter((x): x is ScenarioInfo => !!x);
   const notes: string[] = [];
-  if (list.some((x) => RETAILER_ONLY.includes(x.id))) notes.push('SN026, SN027 and SN028 only apply if you are registered as a retailer in your sales tax profile (spec §9 note).');
-  if (a === 'Manufacturer' && s === 'Pharmaceuticals') notes.push('Spec §10 lists no SN025 for Manufacturer / Pharmaceuticals although other activities in this sector have it. Copied as printed; confirm with FBR.');
+  if (list.some((x) => RETAILER_ONLY.includes(x.id)))
+    notes.push(
+      'SN026, SN027 and SN028 only apply if you are registered as a retailer in your sales tax profile (spec §9 note).',
+    );
+  if (a === 'Manufacturer' && s === 'Pharmaceuticals')
+    notes.push(
+      'Spec §10 lists no SN025 for Manufacturer / Pharmaceuticals although other activities in this sector have it. Copied as printed; confirm with FBR.',
+    );
   return { activity: a, sector: s, scenarios: list, notes, specVersion: SPEC_VERSION };
 }

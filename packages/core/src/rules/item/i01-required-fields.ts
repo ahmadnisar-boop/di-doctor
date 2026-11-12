@@ -23,6 +23,10 @@ export const i01RequiredFields: Rule = {
     const f = findings(this);
     const missing = REQUIRED_ITEM_FIELDS.filter((k) => !isPresent(item![k]));
     if (missing.length === 0) return [f.pass(`items[${index}]`, 'All required item fields are present.')];
-    return missing.map((k) => f.fail(`items[${index}].${k}`, `${k} is missing or empty.`, `Provide ${k} on every item.`, { errorCode: CODES[k] }));
+    return missing.map((k) =>
+      f.fail(`items[${index}].${k}`, `${k} is missing or empty.`, `Provide ${k} on every item.`, {
+        errorCode: CODES[k],
+      }),
+    );
   },
 };

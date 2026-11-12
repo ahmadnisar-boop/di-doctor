@@ -10,12 +10,12 @@
 
 DI Doctor helps developers integrate with Pakistan's FBR Digital Invoicing (DI) API faster. It validates invoice payloads offline, explains every FBR error code in plain English, reads FBR responses safely, lists the sandbox scenarios you must pass, and runs a **local sandbox simulator** so you can integrate before you have FBR access. Works with any language: JSON in, JSON out.
 
-Everything is derived from the official *Technical Specification for DI API* v1.12 (PRAL, July 2025). Every check cites the section it comes from. Three verdicts, never a guess:
+Everything is derived from the official _Technical Specification for DI API_ v1.12 (PRAL, July 2025). Every check cites the section it comes from. Three verdicts, never a guess:
 
-| Verdict | Meaning |
-|---|---|
-| `pass` | The spec's rule holds for this payload. |
-| `fail` | The spec's rule is broken. `error` failures would be rejected by FBR; `warning` failures are likely mistakes the spec does not explicitly forbid. |
+| Verdict         | Meaning                                                                                                                                                                  |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `pass`          | The spec's rule holds for this payload.                                                                                                                                  |
+| `fail`          | The spec's rule is broken. `error` failures would be rejected by FBR; `warning` failures are likely mistakes the spec does not explicitly forbid.                        |
 | `cannot-verify` | The spec mentions a rule but checking it needs data we don't have offline (FBR reference APIs, your taxpayer profile, the original invoice). The reason is always given. |
 
 ## Install
@@ -38,9 +38,11 @@ npm install @ahmadnisar-boop/di-doctor
 ## 60-second tour
 
 **1. Validate before you send.**
+
 ```sh
 di-doctor validate invoice.json --env sandbox
 ```
+
 ```
 ✗ items[0].salesTaxApplicable  (I04, spec v1.12 §7 (0104, 0102, 0103, 0105), §5.8, FBR code 0104)
   Problem: salesTaxApplicable 150.00 does not match 18% of 1000.00 (expected 180.00, difference 30.00).
@@ -49,30 +51,37 @@ di-doctor validate invoice.json --env sandbox
   FBR rejects HS codes that do not fit the sale type (0052) ... Planned for a later version.
 ✓ 21 passed  ✗ 1 failed  ? 6 cannot verify offline
 ```
+
 Add `--activity Manufacturer --sector Textile` to also check that your `scenarioId` applies to your business.
 
 **2. Simulate the sandbox locally.**
+
 ```sh
 di-doctor serve                      # http://127.0.0.1:8787, same paths as FBR
 curl -s -X POST http://127.0.0.1:8787/di_data/v1/di/postinvoicedata_sb \
   -H 'Authorization: Bearer any-token' -H 'Content-Type: application/json' \
   -d @invoice.json
 ```
+
 Point your ERP's base URL at the simulator and keep the FBR paths. You get FBR-shaped responses, including the trap where the top-level `statusCode` is `"00"` while an item failed, `401` without a Bearer token, and optional `--chaos 0.2` outages and `--latency 300` delays for testing your retry logic. One-shot version: `di-doctor simulate invoice.json --env sandbox`.
 
 **3. Read the real response safely.**
+
 ```sh
 di-doctor check-response response.json
 ```
+
 Never trust the top-level `statusCode` alone. `check-response` combines header and item results, handles `invoiceStatuses: null`, and returns the FBR invoice number only when the invoice was actually accepted.
 
 **4. Understand an error.**
+
 ```sh
 di-doctor explain 0052            # or: di-doctor explain response.json
 di-doctor codes                   # all 108 codes DI Doctor can explain
 ```
 
 **5. Find your scenarios.**
+
 ```sh
 di-doctor scenarios --activity Retailer --sector FMCG
 ```
@@ -90,6 +99,7 @@ if (result.summary.fail > 0) console.log(result.findings.filter((f) => f.verdict
 const verdict = checkResponse(fbrResponseBody, { httpStatus: 200 });
 if (verdict.overall === 'valid') save(verdict.fbrInvoiceNumber);
 ```
+
 All functions are pure: no network, no file I/O, no global state. Full API: [`docs/integration.md`](docs/integration.md).
 
 ## Use from an AI assistant (MCP)
@@ -97,6 +107,7 @@ All functions are pure: no network, no file I/O, no global state. Full API: [`do
 ```sh
 claude mcp add di-doctor -- npx di-doctor mcp
 ```
+
 Tools: `di_validate_invoice`, `di_check_response`, `di_explain_error`, `di_list_scenarios`, `di_simulate_response`. Read-only, no network.
 
 ## Use from any language (JSON Schema)
@@ -122,7 +133,7 @@ v1.12, last updated 2025-07-24. Official document link: `packages/core/src/data/
 
 ## Contributing
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md). Adding a rule is one file plus a passing and a failing fixture. The most useful report you can file is [FBR behaved differently from the spec](https://github.com/ahmadnisar-boop/di-doctor/issues/new?template=spec_vs_live.yml). Changes are tracked in [`CHANGELOG.md`](CHANGELOG.md); security reports go through [`SECURITY.md`](SECURITY.md).
+See [`CONTRIBUTING.md`](CONTRIBUTING.md). Adding a rule is one file plus a passing and a failing fixture. The most useful report you can file is [FBR behaved differently from the spec](https://github.com/ahmadnisar-boop/di-doctor/issues/new?template=spec_vs_live.yml). Changes are tracked in [`CHANGELOG.md`](CHANGELOG.md); security reports go through [`SECURITY.md`](SECURITY.md); participation follows the [code of conduct](CODE_OF_CONDUCT.md). Design background: [`docs/DESIGN.md`](docs/DESIGN.md).
 
 ## License
 

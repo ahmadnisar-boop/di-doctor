@@ -19,9 +19,26 @@ export const h02InvoiceDate: Rule = {
   check({ invoice }) {
     const f = findings(this);
     const v = invoice['invoiceDate'];
-    if (!isNonEmptyString(v)) return [f.fail('invoiceDate', 'invoiceDate is missing or empty.', 'Provide the invoice date as YYYY-MM-DD.', { errorCode: '0042' })];
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(v.trim())) return [f.fail('invoiceDate', `invoiceDate "${v}" is not in YYYY-MM-DD format.`, 'Use YYYY-MM-DD, for example 2025-05-25, with no time part.')];
-    if (!isRealDate(v.trim())) return [f.fail('invoiceDate', `invoiceDate "${v}" is not a real calendar date.`, 'Check the month and day values.', { errorCode: '0043' })];
+    if (!isNonEmptyString(v))
+      return [
+        f.fail('invoiceDate', 'invoiceDate is missing or empty.', 'Provide the invoice date as YYYY-MM-DD.', {
+          errorCode: '0042',
+        }),
+      ];
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(v.trim()))
+      return [
+        f.fail(
+          'invoiceDate',
+          `invoiceDate "${v}" is not in YYYY-MM-DD format.`,
+          'Use YYYY-MM-DD, for example 2025-05-25, with no time part.',
+        ),
+      ];
+    if (!isRealDate(v.trim()))
+      return [
+        f.fail('invoiceDate', `invoiceDate "${v}" is not a real calendar date.`, 'Check the month and day values.', {
+          errorCode: '0043',
+        }),
+      ];
     return [f.pass('invoiceDate', `invoiceDate "${v}" is well-formed.`)];
   },
 };

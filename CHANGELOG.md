@@ -4,6 +4,10 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+### Changed
+
+- Repository prepared for public release: design notes replace the private planning document, per-package READMEs, complete package metadata, code of conduct, Prettier formatting, CI on Node 20/22/24, pinned-major GitHub Actions, idempotent release workflow.
+
 ## [0.1.0] - 2026-11-12
 
 First release. Based on the FBR/PRAL *Technical Specification for DI API* v1.12 (July 2025).

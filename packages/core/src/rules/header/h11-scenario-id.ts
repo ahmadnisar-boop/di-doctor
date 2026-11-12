@@ -11,11 +11,28 @@ export const h11ScenarioId: Rule = {
     const f = findings(this);
     const v = invoice['scenarioId'];
     if (options.environment === 'sandbox') {
-      if (!isNonEmptyString(v)) return [f.fail('scenarioId', 'scenarioId is required in sandbox.', 'Set scenarioId to one of SN001–SN028. Run `di-doctor scenarios` to see which apply to you.')];
+      if (!isNonEmptyString(v))
+        return [
+          f.fail(
+            'scenarioId',
+            'scenarioId is required in sandbox.',
+            'Set scenarioId to one of SN001–SN028. Run `di-doctor scenarios` to see which apply to you.',
+          ),
+        ];
       if (SCENARIO_ID.test(v.trim())) return [f.pass('scenarioId', `scenarioId is ${v}.`)];
-      return [f.fail('scenarioId', `scenarioId "${v}" is not one of SN001–SN028.`, 'Use the exact format SN001 … SN028.')];
+      return [
+        f.fail('scenarioId', `scenarioId "${v}" is not one of SN001–SN028.`, 'Use the exact format SN001 … SN028.'),
+      ];
     }
-    if (isPresent(v)) return [f.fail('scenarioId', 'scenarioId is set but this is a production payload.', 'The spec only requires scenarioId in sandbox. Remove it for production unless FBR told you otherwise.', { severity: 'warning' })];
+    if (isPresent(v))
+      return [
+        f.fail(
+          'scenarioId',
+          'scenarioId is set but this is a production payload.',
+          'The spec only requires scenarioId in sandbox. Remove it for production unless FBR told you otherwise.',
+          { severity: 'warning' },
+        ),
+      ];
     return [f.pass('scenarioId', 'scenarioId not set (not needed in production).')];
   },
 };

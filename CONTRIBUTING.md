@@ -4,7 +4,7 @@ Thanks for helping Pakistani developers ship FBR integrations with less pain.
 
 ## Ground rules
 
-1. **The spec is the source of truth.** Every rule cites its section of the PRAL *Technical Specification for DI API* v1.12. Never invent a rule. If the spec is unclear, the rule returns `cannot-verify` with the reason, and the ambiguity goes into `docs/spec-traps.md`.
+1. **The spec is the source of truth.** Every rule cites its section of the PRAL _Technical Specification for DI API_ v1.12. Never invent a rule. If the spec is unclear, the rule returns `cannot-verify` with the reason, and the ambiguity goes into `docs/spec-traps.md`.
 2. **Never copy spec text.** Error explanations, messages and docs are written in our own words. Codes, field names and scenario IDs are fine to reference.
 3. **Three verdicts:** `pass`, `fail`, `cannot-verify`. `fail` is `error` (FBR would reject) or `warning` (likely mistake, not explicitly forbidden).
 4. **Not tax advice.** Never tell users which HS code, rate or sale type is right for their product.

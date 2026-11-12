@@ -9,7 +9,9 @@ export const h04SellerNameAddress: Rule = {
   check({ invoice }) {
     const f = findings(this);
     return (['sellerBusinessName', 'sellerAddress'] as const).map((field) =>
-      isNonEmptyString(invoice[field]) ? f.pass(field, `${field} is present.`) : f.fail(field, `${field} is missing or empty.`, `Provide a non-empty string for ${field}.`),
+      isNonEmptyString(invoice[field])
+        ? f.pass(field, `${field} is present.`)
+        : f.fail(field, `${field} is missing or empty.`, `Provide a non-empty string for ${field}.`),
     );
   },
 };

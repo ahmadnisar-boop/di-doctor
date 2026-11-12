@@ -8,9 +8,7 @@
       "Registration suspended or not yet active",
       "Sandbox token issued for a different test seller"
     ],
-    "fieldsToCheck": [
-      "sellerNTNCNIC"
-    ],
+    "fieldsToCheck": ["sellerNTNCNIC"],
     "fix": "Confirm the seller's sales tax registration status on the FBR portal (the STATL reference API also reports it) and use the registered number.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0001)"
@@ -23,10 +21,7 @@
       "Wrong length (the spec mentions 7-digit NTN, 13-digit CNIC, and in one place a 9-digit NTN)",
       "Sending the number as a JSON number so leading zeros are lost"
     ],
-    "fieldsToCheck": [
-      "buyerNTNCNIC",
-      "buyerRegistrationType"
-    ],
+    "fieldsToCheck": ["buyerNTNCNIC", "buyerRegistrationType"],
     "fix": "Send the number as a string of digits only, with no separators, and keep any leading zeros.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0002)"
@@ -39,9 +34,7 @@
       "Lower-case or extra whitespace",
       "Using an invoice type from another system, such as Credit Note"
     ],
-    "fieldsToCheck": [
-      "invoiceType"
-    ],
+    "fieldsToCheck": ["invoiceType"],
     "fix": "Use exactly \"Sale Invoice\" or \"Debit Note\".",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0003)"
@@ -54,9 +47,7 @@
       "Date sent with a time part",
       "Locale-formatted date from the ERP"
     ],
-    "fieldsToCheck": [
-      "invoiceDate"
-    ],
+    "fieldsToCheck": ["invoiceDate"],
     "fix": "Send invoiceDate as a plain YYYY-MM-DD string, for example 2025-05-25.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0005), §4.1.2"
@@ -64,13 +55,8 @@
   "0006": {
     "title": "No sale invoice exists for this withholding entry",
     "meaning": "FBR expected an existing sale invoice to attach a sales-tax-withholding record to and found none.",
-    "commonCauses": [
-      "Withholding declared before the original invoice was accepted",
-      "Wrong reference number"
-    ],
-    "fieldsToCheck": [
-      "invoiceRefNo"
-    ],
+    "commonCauses": ["Withholding declared before the original invoice was accepted", "Wrong reference number"],
+    "fieldsToCheck": ["invoiceRefNo"],
     "fix": "Make sure the original sale invoice was accepted by FBR first and reference its FBR invoice number. This condition refers to data that is not part of the DI API payload described in the spec; the message comes from FBR's shared validation engine. If you receive it through the DI API, note the exact response and ask PRAL support.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0006)"
@@ -83,19 +69,11 @@
       "Sale type reserved for a sector you are not registered in (for example steel or textile)",
       "Different casing or spelling from the official sale type list"
     ],
-    "fieldsToCheck": [
-      "items[].saleType",
-      "scenarioId"
-    ],
+    "fieldsToCheck": ["items[].saleType", "scenarioId"],
     "fix": "Copy the sale type exactly from the scenario table and make sure it fits the seller's business activity. Run `di-doctor scenarios` to see the expected sale type for each scenario.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0007), §9",
-    "relatedScenarios": [
-      "SN001",
-      "SN002",
-      "SN005",
-      "SN008"
-    ]
+    "relatedScenarios": ["SN001", "SN002", "SN005", "SN008"]
   },
   "0008": {
     "title": "Sales tax withheld at source has an unexpected value",
@@ -105,10 +83,7 @@
       "Rounding differences between the two fields",
       "Copying furtherTax or extraTax into the withheld field by mistake"
     ],
-    "fieldsToCheck": [
-      "items[].salesTaxWithheldAtSource",
-      "items[].salesTaxApplicable"
-    ],
+    "fieldsToCheck": ["items[].salesTaxWithheldAtSource", "items[].salesTaxApplicable"],
     "fix": "Set salesTaxWithheldAtSource to 0, or make it identical to salesTaxApplicable for that line.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0008)"
@@ -120,10 +95,7 @@
       "buyerRegistrationType is \"Registered\" but the number was left blank",
       "Field dropped by the ERP for walk-in customers"
     ],
-    "fieldsToCheck": [
-      "buyerNTNCNIC",
-      "buyerRegistrationType"
-    ],
+    "fieldsToCheck": ["buyerNTNCNIC", "buyerRegistrationType"],
     "fix": "Provide the buyer's NTN or CNIC, or mark the buyer as Unregistered if that is the case.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0009)"
@@ -131,13 +103,8 @@
   "0010": {
     "title": "Buyer business name is missing",
     "meaning": "buyerBusinessName is empty or absent.",
-    "commonCauses": [
-      "Walk-in sale without a customer record",
-      "Field mapped from an empty ERP column"
-    ],
-    "fieldsToCheck": [
-      "buyerBusinessName"
-    ],
+    "commonCauses": ["Walk-in sale without a customer record", "Field mapped from an empty ERP column"],
+    "fieldsToCheck": ["buyerBusinessName"],
     "fix": "Send a non-empty buyer name on every invoice, including sales to unregistered buyers.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0010)"
@@ -145,13 +112,8 @@
   "0011": {
     "title": "Invoice type is missing",
     "meaning": "invoiceType is empty or absent.",
-    "commonCauses": [
-      "Field not mapped",
-      "Sent as null"
-    ],
-    "fieldsToCheck": [
-      "invoiceType"
-    ],
+    "commonCauses": ["Field not mapped", "Sent as null"],
+    "fieldsToCheck": ["invoiceType"],
     "fix": "Send \"Sale Invoice\" or \"Debit Note\".",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0011)"
@@ -163,9 +125,7 @@
       "Key misspelled as \"buyeRegistrationType\" (the typo in the spec's field table)",
       "Field not mapped"
     ],
-    "fieldsToCheck": [
-      "buyerRegistrationType"
-    ],
+    "fieldsToCheck": ["buyerRegistrationType"],
     "fix": "Send buyerRegistrationType as \"Registered\" or \"Unregistered\". Check the key spelling.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0012)"
@@ -178,9 +138,7 @@
       "Typo or extra whitespace in the sale type",
       "Using a value that is not in FBR's transaction type list"
     ],
-    "fieldsToCheck": [
-      "items[].saleType"
-    ],
+    "fieldsToCheck": ["items[].saleType"],
     "fix": "Send one of FBR's official sale type strings on every item. The sandbox scenario table lists the expected sale type for each scenario.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0013), §5.5"
@@ -188,13 +146,8 @@
   "0018": {
     "title": "Sales tax (or FED in sales-tax mode) is missing",
     "meaning": "salesTaxApplicable is empty on a line item.",
-    "commonCauses": [
-      "Field sent as null or an empty string",
-      "Zero-rated line sent without an explicit 0"
-    ],
-    "fieldsToCheck": [
-      "items[].salesTaxApplicable"
-    ],
+    "commonCauses": ["Field sent as null or an empty string", "Zero-rated line sent without an explicit 0"],
+    "fieldsToCheck": ["items[].salesTaxApplicable"],
     "fix": "Send salesTaxApplicable as a number on every item; use 0 for zero-rated or exempt lines.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0018)"
@@ -202,13 +155,8 @@
   "0019": {
     "title": "HS code is missing",
     "meaning": "At least one line item has no HS code.",
-    "commonCauses": [
-      "hsCode empty, null or absent",
-      "Product master data has no HS code mapped"
-    ],
-    "fieldsToCheck": [
-      "items[].hsCode"
-    ],
+    "commonCauses": ["hsCode empty, null or absent", "Product master data has no HS code mapped"],
+    "fieldsToCheck": ["items[].hsCode"],
     "fix": "Send the HS code for every item, in the form FBR uses in its item list (for example 0101.2100).",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0019), §5.3"
@@ -216,12 +164,8 @@
   "0020": {
     "title": "Rate is missing",
     "meaning": "rate is empty on a line item.",
-    "commonCauses": [
-      "Field sent as null, empty string, or a number instead of a string"
-    ],
-    "fieldsToCheck": [
-      "items[].rate"
-    ],
+    "commonCauses": ["Field sent as null, empty string, or a number instead of a string"],
+    "fieldsToCheck": ["items[].rate"],
     "fix": "Send rate as a string exactly as FBR's rate list spells it, for example \"18%\".",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0020)"
@@ -229,14 +173,8 @@
   "0021": {
     "title": "Value excluding sales tax or quantity is missing",
     "meaning": "valueSalesExcludingST or quantity is empty on a line item.",
-    "commonCauses": [
-      "Fields sent as null or empty strings",
-      "Service lines sent without a quantity"
-    ],
-    "fieldsToCheck": [
-      "items[].valueSalesExcludingST",
-      "items[].quantity"
-    ],
+    "commonCauses": ["Fields sent as null or empty strings", "Service lines sent without a quantity"],
+    "fieldsToCheck": ["items[].valueSalesExcludingST", "items[].quantity"],
     "fix": "Send both as JSON numbers on every item; use 1 for quantity when it does not apply.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0021)"
@@ -244,13 +182,8 @@
   "0022": {
     "title": "Sales tax withheld at source is missing",
     "meaning": "salesTaxWithheldAtSource is empty on a line item.",
-    "commonCauses": [
-      "Optional-looking field left out",
-      "Sent as null"
-    ],
-    "fieldsToCheck": [
-      "items[].salesTaxWithheldAtSource"
-    ],
+    "commonCauses": ["Optional-looking field left out", "Sent as null"],
+    "fieldsToCheck": ["items[].salesTaxWithheldAtSource"],
     "fix": "Send salesTaxWithheldAtSource on every item; use 0 when nothing is withheld.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0022)"
@@ -258,12 +191,8 @@
   "0023": {
     "title": "Sales tax is missing",
     "meaning": "The sales tax amount for a line was not provided.",
-    "commonCauses": [
-      "Sent as null or an empty string"
-    ],
-    "fieldsToCheck": [
-      "items[].salesTaxApplicable"
-    ],
+    "commonCauses": ["Sent as null or an empty string"],
+    "fieldsToCheck": ["items[].salesTaxApplicable"],
     "fix": "Send salesTaxApplicable as a number, 0 if none applies.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0023)"
@@ -271,12 +200,8 @@
   "0024": {
     "title": "Sales tax withheld is missing",
     "meaning": "A withheld-tax amount FBR expected was not provided.",
-    "commonCauses": [
-      "Withholding-agent invoice without the withheld amount"
-    ],
-    "fieldsToCheck": [
-      "items[].salesTaxWithheldAtSource"
-    ],
+    "commonCauses": ["Withholding-agent invoice without the withheld amount"],
+    "fieldsToCheck": ["items[].salesTaxWithheldAtSource"],
     "fix": "Send the withheld amount as a number, 0 if none. This condition refers to data that is not part of the DI API payload described in the spec; the message comes from FBR's shared validation engine. If you receive it through the DI API, note the exact response and ask PRAL support.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0024)"
@@ -288,10 +213,7 @@
       "invoiceRefNo left empty when invoiceType is Debit Note",
       "Using your internal invoice number instead of the FBR-issued one"
     ],
-    "fieldsToCheck": [
-      "invoiceRefNo",
-      "invoiceType"
-    ],
+    "fieldsToCheck": ["invoiceRefNo", "invoiceType"],
     "fix": "Put the FBR invoice number of the original invoice in invoiceRefNo. The spec says it is 22 characters for NTN-based sellers and 28 for CNIC-based sellers.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0026), §4.1.2"
@@ -299,12 +221,8 @@
   "0027": {
     "title": "Reason is required for a debit or credit note",
     "meaning": "FBR expected a reason for the note.",
-    "commonCauses": [
-      "Note submitted through a channel that requires a reason field"
-    ],
-    "fieldsToCheck": [
-      "invoiceType"
-    ],
+    "commonCauses": ["Note submitted through a channel that requires a reason field"],
+    "fieldsToCheck": ["invoiceType"],
     "fix": "This condition refers to data that is not part of the DI API payload described in the spec; the message comes from FBR's shared validation engine. If you receive it through the DI API, note the exact response and ask PRAL support.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0027)"
@@ -312,12 +230,8 @@
   "0028": {
     "title": "Reason remarks are required",
     "meaning": "The note's reason was set to \"Others\" without free-text remarks.",
-    "commonCauses": [
-      "Reason \"Others\" chosen without explanation"
-    ],
-    "fieldsToCheck": [
-      "invoiceType"
-    ],
+    "commonCauses": ["Reason \"Others\" chosen without explanation"],
+    "fieldsToCheck": ["invoiceType"],
     "fix": "This condition refers to data that is not part of the DI API payload described in the spec; the message comes from FBR's shared validation engine. If you receive it through the DI API, note the exact response and ask PRAL support.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0028)"
@@ -325,14 +239,8 @@
   "0029": {
     "title": "Note date is earlier than the original invoice",
     "meaning": "A debit or credit note must be dated on or after the original invoice.",
-    "commonCauses": [
-      "Back-dated note",
-      "Original invoice re-issued with a later date"
-    ],
-    "fieldsToCheck": [
-      "invoiceDate",
-      "invoiceRefNo"
-    ],
+    "commonCauses": ["Back-dated note", "Original invoice re-issued with a later date"],
+    "fieldsToCheck": ["invoiceDate", "invoiceRefNo"],
     "fix": "Use a note date on or after the date of the invoice referenced in invoiceRefNo.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0029)"
@@ -340,13 +248,8 @@
   "0030": {
     "title": "Unregistered distributor type not allowed before the cut-off date",
     "meaning": "FBR rejects this buyer type for dates before a system-wide cut-off.",
-    "commonCauses": [
-      "Invoice dated before the rule change"
-    ],
-    "fieldsToCheck": [
-      "invoiceDate",
-      "buyerRegistrationType"
-    ],
+    "commonCauses": ["Invoice dated before the rule change"],
+    "fieldsToCheck": ["invoiceDate", "buyerRegistrationType"],
     "fix": "Check the invoice date and the buyer type. The cut-off date is set by FBR, not documented in the spec.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0030)"
@@ -354,12 +257,8 @@
   "0031": {
     "title": "Sales tax is not mentioned",
     "meaning": "The sales tax amount is absent.",
-    "commonCauses": [
-      "Sent as null"
-    ],
-    "fieldsToCheck": [
-      "items[].salesTaxApplicable"
-    ],
+    "commonCauses": ["Sent as null"],
+    "fieldsToCheck": ["items[].salesTaxApplicable"],
     "fix": "Send salesTaxApplicable as a number on every item.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0031)"
@@ -367,12 +266,8 @@
   "0032": {
     "title": "Withholding record only allowed for government or FTN holders",
     "meaning": "A sales-tax-withholding entry without a sale invoice is only accepted from government or free-tax-number holders.",
-    "commonCauses": [
-      "Normal taxpayer trying to declare withholding without the underlying invoice"
-    ],
-    "fieldsToCheck": [
-      "sellerNTNCNIC"
-    ],
+    "commonCauses": ["Normal taxpayer trying to declare withholding without the underlying invoice"],
+    "fieldsToCheck": ["sellerNTNCNIC"],
     "fix": "Declare the sale invoice first; withholding-only entries are reserved for government/FTN holders. This condition refers to data that is not part of the DI API payload described in the spec; the message comes from FBR's shared validation engine. If you receive it through the DI API, note the exact response and ask PRAL support.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0032)"
@@ -380,13 +275,8 @@
   "0034": {
     "title": "Note submitted too long after the original invoice",
     "meaning": "Debit and credit notes are only accepted within 180 days of the original invoice date.",
-    "commonCauses": [
-      "Late adjustment"
-    ],
-    "fieldsToCheck": [
-      "invoiceDate",
-      "invoiceRefNo"
-    ],
+    "commonCauses": ["Late adjustment"],
+    "fieldsToCheck": ["invoiceDate", "invoiceRefNo"],
     "fix": "Issue the note within the 180-day window. For older invoices, ask your tax adviser about the correct process.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0034)"
@@ -394,13 +284,8 @@
   "0035": {
     "title": "Note date must not precede the original invoice",
     "meaning": "Same check as 0029: the note's date must be on or after the original invoice date.",
-    "commonCauses": [
-      "Back-dated note"
-    ],
-    "fieldsToCheck": [
-      "invoiceDate",
-      "invoiceRefNo"
-    ],
+    "commonCauses": ["Back-dated note"],
+    "fieldsToCheck": ["invoiceDate", "invoiceRefNo"],
     "fix": "Use a note date on or after the original invoice date.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0035)"
@@ -408,14 +293,8 @@
   "0036": {
     "title": "Credit note value exceeds the original",
     "meaning": "The total value across credit notes for an invoice cannot be more than the original invoice's value.",
-    "commonCauses": [
-      "Multiple credit notes against one invoice adding up beyond its value",
-      "Wrong reference invoice"
-    ],
-    "fieldsToCheck": [
-      "items[].valueSalesExcludingST",
-      "invoiceRefNo"
-    ],
+    "commonCauses": ["Multiple credit notes against one invoice adding up beyond its value", "Wrong reference invoice"],
+    "fieldsToCheck": ["items[].valueSalesExcludingST", "invoiceRefNo"],
     "fix": "Check the cumulative credit notes against the original invoice value.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0036)"
@@ -423,13 +302,8 @@
   "0037": {
     "title": "Credit note withheld tax exceeds the original",
     "meaning": "The sales tax withheld on credit notes cannot exceed the amount withheld on the original invoice.",
-    "commonCauses": [
-      "Withheld amount copied from a different invoice"
-    ],
-    "fieldsToCheck": [
-      "items[].salesTaxWithheldAtSource",
-      "invoiceRefNo"
-    ],
+    "commonCauses": ["Withheld amount copied from a different invoice"],
+    "fieldsToCheck": ["items[].salesTaxWithheldAtSource", "invoiceRefNo"],
     "fix": "Keep the withheld amount at or below the original invoice's withheld amount.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0037)"
@@ -437,12 +311,8 @@
   "0039": {
     "title": "Withholding invoice fields differ from the sale invoice",
     "meaning": "For registered buyers, a withholding entry must repeat the fields of the sale invoice it belongs to.",
-    "commonCauses": [
-      "Values edited between the sale invoice and the withholding entry"
-    ],
-    "fieldsToCheck": [
-      "invoiceRefNo"
-    ],
+    "commonCauses": ["Values edited between the sale invoice and the withholding entry"],
+    "fieldsToCheck": ["invoiceRefNo"],
     "fix": "Copy the original invoice fields unchanged. This condition refers to data that is not part of the DI API payload described in the spec; the message comes from FBR's shared validation engine. If you receive it through the DI API, note the exact response and ask PRAL support.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0039)"
@@ -450,9 +320,7 @@
   "0041": {
     "title": "Invoice number is missing",
     "meaning": "An invoice number FBR expected was empty.",
-    "commonCauses": [
-      "Channel that requires the seller's own invoice number"
-    ],
+    "commonCauses": ["Channel that requires the seller's own invoice number"],
     "fieldsToCheck": [],
     "fix": "This condition refers to data that is not part of the DI API payload described in the spec; the message comes from FBR's shared validation engine. If you receive it through the DI API, note the exact response and ask PRAL support.",
     "side": "sale",
@@ -461,13 +329,8 @@
   "0042": {
     "title": "Invoice date is missing",
     "meaning": "invoiceDate is empty or absent.",
-    "commonCauses": [
-      "Field not mapped",
-      "Sent as null"
-    ],
-    "fieldsToCheck": [
-      "invoiceDate"
-    ],
+    "commonCauses": ["Field not mapped", "Sent as null"],
+    "fieldsToCheck": ["invoiceDate"],
     "fix": "Send invoiceDate as YYYY-MM-DD.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0042)"
@@ -475,13 +338,8 @@
   "0043": {
     "title": "Invoice date is not valid",
     "meaning": "invoiceDate parsed but is not an acceptable date.",
-    "commonCauses": [
-      "Impossible date such as 2025-02-30",
-      "Date far in the future or past"
-    ],
-    "fieldsToCheck": [
-      "invoiceDate"
-    ],
+    "commonCauses": ["Impossible date such as 2025-02-30", "Date far in the future or past"],
+    "fieldsToCheck": ["invoiceDate"],
     "fix": "Send a real calendar date in YYYY-MM-DD.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0043)"
@@ -489,13 +347,8 @@
   "0044": {
     "title": "HS code is missing",
     "meaning": "At least one line item has no HS code.",
-    "commonCauses": [
-      "hsCode is empty, null or absent",
-      "Product master data has no HS code mapped"
-    ],
-    "fieldsToCheck": [
-      "items[].hsCode"
-    ],
+    "commonCauses": ["hsCode is empty, null or absent", "Product master data has no HS code mapped"],
+    "fieldsToCheck": ["items[].hsCode"],
     "fix": "Send the HS code for every item in the format FBR uses in its item list, for example 0101.2100.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0044), §5.3"
@@ -508,10 +361,7 @@
       "Rate sent as a number (18) instead of the string FBR expects (\"18%\")",
       "Rate string does not match any rate FBR lists for that sale type"
     ],
-    "fieldsToCheck": [
-      "items[].rate",
-      "items[].saleType"
-    ],
+    "fieldsToCheck": ["items[].rate", "items[].saleType"],
     "fix": "Send rate as a string, exactly as FBR's rate list spells it for the sale type you chose.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0046), §5.8"
@@ -519,19 +369,12 @@
   "0050": {
     "title": "Cotton ginners: withheld tax must equal the sales tax or be zero",
     "meaning": "For the Cotton Ginners sale type the withheld amount has only two valid values.",
-    "commonCauses": [
-      "Partial withholding"
-    ],
-    "fieldsToCheck": [
-      "items[].salesTaxWithheldAtSource",
-      "items[].salesTaxApplicable"
-    ],
+    "commonCauses": ["Partial withholding"],
+    "fieldsToCheck": ["items[].salesTaxWithheldAtSource", "items[].salesTaxApplicable"],
     "fix": "Set salesTaxWithheldAtSource to 0 or to the full salesTaxApplicable.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0050)",
-    "relatedScenarios": [
-      "SN009"
-    ]
+    "relatedScenarios": ["SN009"]
   },
   "0052": {
     "title": "HS code does not fit the sale type",
@@ -541,32 +384,17 @@
       "Correct HS code but wrong sale type for the scenario",
       "HS code not present in FBR's item list"
     ],
-    "fieldsToCheck": [
-      "items[].hsCode",
-      "items[].saleType",
-      "scenarioId"
-    ],
+    "fieldsToCheck": ["items[].hsCode", "items[].saleType", "scenarioId"],
     "fix": "Check that the HS code exists in FBR's item list and that the sale type is one FBR allows for that code. DI Doctor cannot verify this pairing offline because it needs FBR's reference APIs.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0052), §5.3, §5.8",
-    "relatedScenarios": [
-      "SN003",
-      "SN010",
-      "SN012",
-      "SN013",
-      "SN014"
-    ]
+    "relatedScenarios": ["SN003", "SN010", "SN012", "SN013", "SN014"]
   },
   "0053": {
     "title": "Buyer registration type is not recognised",
     "meaning": "buyerRegistrationType has a value other than the two FBR accepts.",
-    "commonCauses": [
-      "Lower-case \"registered\"",
-      "Values like \"Yes\"/\"No\" or \"Consumer\""
-    ],
-    "fieldsToCheck": [
-      "buyerRegistrationType"
-    ],
+    "commonCauses": ["Lower-case \"registered\"", "Values like \"Yes\"/\"No\" or \"Consumer\""],
+    "fieldsToCheck": ["buyerRegistrationType"],
     "fix": "Use exactly \"Registered\" or \"Unregistered\".",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0053)"
@@ -574,12 +402,8 @@
   "0055": {
     "title": "Sales tax withheld as withholding agent is missing or malformed",
     "meaning": "A withholding-agent amount was expected and was empty or not a number.",
-    "commonCauses": [
-      "Field absent on a withholding-agent invoice"
-    ],
-    "fieldsToCheck": [
-      "items[].salesTaxWithheldAtSource"
-    ],
+    "commonCauses": ["Field absent on a withholding-agent invoice"],
+    "fieldsToCheck": ["items[].salesTaxWithheldAtSource"],
     "fix": "Send the withheld amount as a number. This condition refers to data that is not part of the DI API payload described in the spec; the message comes from FBR's shared validation engine. If you receive it through the DI API, note the exact response and ask PRAL support.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0055)"
@@ -591,18 +415,11 @@
       "Selling steel sale types to a buyer outside the sector",
       "Test buyer not set up for steel in sandbox"
     ],
-    "fieldsToCheck": [
-      "buyerNTNCNIC",
-      "items[].saleType"
-    ],
+    "fieldsToCheck": ["buyerNTNCNIC", "items[].saleType"],
     "fix": "Use a buyer registered in the steel sector, or a different sale type.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0056)",
-    "relatedScenarios": [
-      "SN003",
-      "SN004",
-      "SN011"
-    ]
+    "relatedScenarios": ["SN003", "SN004", "SN011"]
   },
   "0057": {
     "title": "Referenced invoice does not exist",
@@ -612,9 +429,7 @@
       "Original invoice sent to the other environment (sandbox vs production)",
       "Typo in the reference"
     ],
-    "fieldsToCheck": [
-      "invoiceRefNo"
-    ],
+    "fieldsToCheck": ["invoiceRefNo"],
     "fix": "Copy the FBR invoice number exactly as it came back in the original response.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0057)"
@@ -626,10 +441,7 @@
       "Test data reusing the same NTN for both parties",
       "Buyer field defaulted to the seller's own number"
     ],
-    "fieldsToCheck": [
-      "sellerNTNCNIC",
-      "buyerNTNCNIC"
-    ],
+    "fieldsToCheck": ["sellerNTNCNIC", "buyerNTNCNIC"],
     "fix": "Use a different buyer registration number.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0058)"
@@ -637,12 +449,8 @@
   "0064": {
     "title": "A credit note already exists for this invoice",
     "meaning": "Only one credit note can be attached to an invoice.",
-    "commonCauses": [
-      "Retrying a credit note that was already accepted"
-    ],
-    "fieldsToCheck": [
-      "invoiceRefNo"
-    ],
+    "commonCauses": ["Retrying a credit note that was already accepted"],
+    "fieldsToCheck": ["invoiceRefNo"],
     "fix": "Check the original invoice's status before sending another note.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0064)"
@@ -650,14 +458,8 @@
   "0067": {
     "title": "Debit note sales tax exceeds the original",
     "meaning": "The sales tax on a debit note cannot be more than the original invoice's sales tax.",
-    "commonCauses": [
-      "Wrong reference invoice",
-      "Tax computed on the wrong base"
-    ],
-    "fieldsToCheck": [
-      "items[].salesTaxApplicable",
-      "invoiceRefNo"
-    ],
+    "commonCauses": ["Wrong reference invoice", "Tax computed on the wrong base"],
+    "fieldsToCheck": ["items[].salesTaxApplicable", "invoiceRefNo"],
     "fix": "Keep the debit note's tax at or below the original invoice's tax.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0067)"
@@ -665,14 +467,8 @@
   "0068": {
     "title": "Credit note sales tax is below what the rate implies",
     "meaning": "The credit note's sales tax is less than the original invoice's tax computed for the rate.",
-    "commonCauses": [
-      "Partial credit with tax not recomputed"
-    ],
-    "fieldsToCheck": [
-      "items[].salesTaxApplicable",
-      "items[].rate",
-      "invoiceRefNo"
-    ],
+    "commonCauses": ["Partial credit with tax not recomputed"],
+    "fieldsToCheck": ["items[].salesTaxApplicable", "items[].rate", "invoiceRefNo"],
     "fix": "Recompute the credit note's tax from its value and rate.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0068)"
@@ -680,13 +476,8 @@
   "0070": {
     "title": "Withholding not allowed for unregistered buyers",
     "meaning": "Sales tax withholding entries are only accepted when the buyer is registered.",
-    "commonCauses": [
-      "buyerRegistrationType Unregistered with a non-zero withheld amount"
-    ],
-    "fieldsToCheck": [
-      "buyerRegistrationType",
-      "items[].salesTaxWithheldAtSource"
-    ],
+    "commonCauses": ["buyerRegistrationType Unregistered with a non-zero withheld amount"],
+    "fieldsToCheck": ["buyerRegistrationType", "items[].salesTaxWithheldAtSource"],
     "fix": "Set salesTaxWithheldAtSource to 0 for unregistered buyers.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0070)"
@@ -694,12 +485,8 @@
   "0071": {
     "title": "Credit note not allowed for this user",
     "meaning": "Only certain taxpayers may add credit notes against a declared invoice.",
-    "commonCauses": [
-      "Taxpayer category not permitted to issue credit notes through this channel"
-    ],
-    "fieldsToCheck": [
-      "sellerNTNCNIC"
-    ],
+    "commonCauses": ["Taxpayer category not permitted to issue credit notes through this channel"],
+    "fieldsToCheck": ["sellerNTNCNIC"],
     "fix": "This condition refers to data that is not part of the DI API payload described in the spec; the message comes from FBR's shared validation engine. If you receive it through the DI API, note the exact response and ask PRAL support.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0071)"
@@ -707,12 +494,8 @@
   "0073": {
     "title": "Sale origination province of the supplier is missing",
     "meaning": "FBR expected the province where the supply originates.",
-    "commonCauses": [
-      "Province field empty"
-    ],
-    "fieldsToCheck": [
-      "sellerProvince"
-    ],
+    "commonCauses": ["Province field empty"],
+    "fieldsToCheck": ["sellerProvince"],
     "fix": "Send sellerProvince using a name from the province reference API. This condition refers to data that is not part of the DI API payload described in the spec; the message comes from FBR's shared validation engine. If you receive it through the DI API, note the exact response and ask PRAL support.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0073), §5.1"
@@ -720,12 +503,8 @@
   "0074": {
     "title": "Destination of supply is missing",
     "meaning": "FBR expected the destination province.",
-    "commonCauses": [
-      "Province field empty"
-    ],
-    "fieldsToCheck": [
-      "buyerProvince"
-    ],
+    "commonCauses": ["Province field empty"],
+    "fieldsToCheck": ["buyerProvince"],
     "fix": "Send buyerProvince using a name from the province reference API. This condition refers to data that is not part of the DI API payload described in the spec; the message comes from FBR's shared validation engine. If you receive it through the DI API, note the exact response and ask PRAL support.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0074), §5.1"
@@ -733,22 +512,12 @@
   "0077": {
     "title": "SRO or schedule number is missing",
     "meaning": "The sale type or rate requires an SRO/schedule reference and none was given.",
-    "commonCauses": [
-      "Reduced-rate, exempt or SRO-based sale type without sroScheduleNo"
-    ],
-    "fieldsToCheck": [
-      "items[].sroScheduleNo",
-      "items[].saleType",
-      "items[].rate"
-    ],
+    "commonCauses": ["Reduced-rate, exempt or SRO-based sale type without sroScheduleNo"],
+    "fieldsToCheck": ["items[].sroScheduleNo", "items[].saleType", "items[].rate"],
     "fix": "Fill sroScheduleNo with the schedule that grants the rate (see the SRO schedule reference API).",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0077), §5.7",
-    "relatedScenarios": [
-      "SN005",
-      "SN006",
-      "SN024"
-    ]
+    "relatedScenarios": ["SN005", "SN006", "SN024"]
   },
   "0078": {
     "title": "SRO item serial number is missing",
@@ -757,46 +526,27 @@
       "sroScheduleNo filled in but sroItemSerialNo left empty",
       "Reduced-rate or exempt sale type that requires an SRO reference"
     ],
-    "fieldsToCheck": [
-      "items[].sroItemSerialNo",
-      "items[].sroScheduleNo"
-    ],
+    "fieldsToCheck": ["items[].sroItemSerialNo", "items[].sroScheduleNo"],
     "fix": "When a line references an SRO schedule, also send the item serial number from that schedule. FBR's SRO item reference API lists the valid values.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0078), §5.10",
-    "relatedScenarios": [
-      "SN005",
-      "SN006",
-      "SN024"
-    ]
+    "relatedScenarios": ["SN005", "SN006", "SN024"]
   },
   "0079": {
     "title": "5% rate not allowed above the value limit",
     "meaning": "The reduced 5% rate cannot be used when the line's value excluding sales tax is above 20,000.",
-    "commonCauses": [
-      "Reduced-rate scenario tested with a large line value"
-    ],
-    "fieldsToCheck": [
-      "items[].rate",
-      "items[].valueSalesExcludingST"
-    ],
+    "commonCauses": ["Reduced-rate scenario tested with a large line value"],
+    "fieldsToCheck": ["items[].rate", "items[].valueSalesExcludingST"],
     "fix": "Lower the line value below the limit or use the rate that applies above it. Which rate applies is a tax question, not something DI Doctor can decide.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0079)",
-    "relatedScenarios": [
-      "SN005",
-      "SN028"
-    ]
+    "relatedScenarios": ["SN005", "SN028"]
   },
   "0080": {
     "title": "Further tax is missing",
     "meaning": "FBR expected a further-tax amount and found none.",
-    "commonCauses": [
-      "Sale to an unregistered buyer where further tax applies, field left null"
-    ],
-    "fieldsToCheck": [
-      "items[].furtherTax"
-    ],
+    "commonCauses": ["Sale to an unregistered buyer where further tax applies, field left null"],
+    "fieldsToCheck": ["items[].furtherTax"],
     "fix": "Send furtherTax as a number (0 when it does not apply). Whether it applies is a tax question.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0080)"
@@ -804,9 +554,7 @@
   "0081": {
     "title": "\"Input credit not allowed\" flag is missing",
     "meaning": "A field from FBR's wider return system was expected.",
-    "commonCauses": [
-      "Channel other than the DI API"
-    ],
+    "commonCauses": ["Channel other than the DI API"],
     "fieldsToCheck": [],
     "fix": "This condition refers to data that is not part of the DI API payload described in the spec; the message comes from FBR's shared validation engine. If you receive it through the DI API, note the exact response and ask PRAL support.",
     "side": "sale",
@@ -815,13 +563,8 @@
   "0082": {
     "title": "Seller is not registered for sales tax",
     "meaning": "Same meaning as 0001: the seller has no active sales tax registration.",
-    "commonCauses": [
-      "Income-tax-only seller",
-      "Suspended registration"
-    ],
-    "fieldsToCheck": [
-      "sellerNTNCNIC"
-    ],
+    "commonCauses": ["Income-tax-only seller", "Suspended registration"],
+    "fieldsToCheck": ["sellerNTNCNIC"],
     "fix": "Use a seller number with active sales tax registration.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0082)"
@@ -829,13 +572,8 @@
   "0083": {
     "title": "Seller registration number does not match",
     "meaning": "The seller number in the payload is not the one FBR associates with your access.",
-    "commonCauses": [
-      "Token issued for a different NTN",
-      "Group company using one token for several sellers"
-    ],
-    "fieldsToCheck": [
-      "sellerNTNCNIC"
-    ],
+    "commonCauses": ["Token issued for a different NTN", "Group company using one token for several sellers"],
+    "fieldsToCheck": ["sellerNTNCNIC"],
     "fix": "Use the seller number the token was issued for, or request a token for this seller.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0083)"
@@ -843,12 +581,8 @@
   "0085": {
     "title": "Total value of sales is missing (PFAD only)",
     "meaning": "A total value is required for this particular sale category.",
-    "commonCauses": [
-      "totalValues left at 0 for a PFAD sale"
-    ],
-    "fieldsToCheck": [
-      "items[].totalValues"
-    ],
+    "commonCauses": ["totalValues left at 0 for a PFAD sale"],
+    "fieldsToCheck": ["items[].totalValues"],
     "fix": "Provide totalValues for this category. The spec does not define PFAD; ask PRAL if you are unsure.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0085)"
@@ -856,12 +590,8 @@
   "0086": {
     "title": "Not an EFS licence holder who imported compressor scrap",
     "meaning": "A sale type restricted to Export Facilitation Scheme licence holders with qualifying imports in the last 12 months.",
-    "commonCauses": [
-      "Sale type chosen for a taxpayer without the licence or the import history"
-    ],
-    "fieldsToCheck": [
-      "items[].saleType"
-    ],
+    "commonCauses": ["Sale type chosen for a taxpayer without the licence or the import history"],
+    "fieldsToCheck": ["items[].saleType"],
     "fix": "Use a different sale type unless your business holds the licence and has the imports.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0086)"
@@ -869,27 +599,17 @@
   "0087": {
     "title": "Petroleum levy rates are not configured",
     "meaning": "FBR's petroleum levy rates were not available for this sale.",
-    "commonCauses": [
-      "Petroleum sale type while FBR's rate table is incomplete for the date"
-    ],
-    "fieldsToCheck": [
-      "items[].saleType",
-      "items[].rate"
-    ],
+    "commonCauses": ["Petroleum sale type while FBR's rate table is incomplete for the date"],
+    "fieldsToCheck": ["items[].saleType", "items[].rate"],
     "fix": "This is on FBR's side; retry later or contact PRAL.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0087)",
-    "relatedScenarios": [
-      "SN012"
-    ]
+    "relatedScenarios": ["SN012"]
   },
   "0088": {
     "title": "Invoice number format is not accepted",
     "meaning": "Invoice numbers may contain letters, digits and dashes, with dashes only between characters.",
-    "commonCauses": [
-      "Leading or trailing dash",
-      "Slashes, spaces or other symbols"
-    ],
+    "commonCauses": ["Leading or trailing dash", "Slashes, spaces or other symbols"],
     "fieldsToCheck": [],
     "fix": "Use a format like INV-001. This condition refers to data that is not part of the DI API payload described in the spec; the message comes from FBR's shared validation engine. If you receive it through the DI API, note the exact response and ask PRAL support.",
     "side": "sale",
@@ -898,30 +618,18 @@
   "0089": {
     "title": "FED charged is missing",
     "meaning": "A federal excise duty amount was expected.",
-    "commonCauses": [
-      "FED-in-sales-tax-mode sale type with fedPayable left null"
-    ],
-    "fieldsToCheck": [
-      "items[].fedPayable",
-      "items[].saleType"
-    ],
+    "commonCauses": ["FED-in-sales-tax-mode sale type with fedPayable left null"],
+    "fieldsToCheck": ["items[].fedPayable", "items[].saleType"],
     "fix": "Send fedPayable as a number for FED-related sale types.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0089)",
-    "relatedScenarios": [
-      "SN017",
-      "SN018"
-    ]
+    "relatedScenarios": ["SN017", "SN018"]
   },
   "0090": {
     "title": "Fixed/notified value or retail price is missing",
     "meaning": "fixedNotifiedValueOrRetailPrice was empty.",
-    "commonCauses": [
-      "Field sent as null instead of 0"
-    ],
-    "fieldsToCheck": [
-      "items[].fixedNotifiedValueOrRetailPrice"
-    ],
+    "commonCauses": ["Field sent as null instead of 0"],
+    "fieldsToCheck": ["items[].fixedNotifiedValueOrRetailPrice"],
     "fix": "Send it as a number on every item; use 0 when it does not apply.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0090)"
@@ -933,10 +641,7 @@
       "extraTax filled in on a sale type that does not support it",
       "ERP copying furtherTax into extraTax"
     ],
-    "fieldsToCheck": [
-      "items[].extraTax",
-      "items[].saleType"
-    ],
+    "fieldsToCheck": ["items[].extraTax", "items[].saleType"],
     "fix": "Send extraTax as 0 (or omit it) unless you know this sale type requires it.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0091)"
@@ -944,12 +649,8 @@
   "0092": {
     "title": "Purchase type is missing or invalid",
     "meaning": "A purchase-side sale type was expected.",
-    "commonCauses": [
-      "Purchase invoice channel"
-    ],
-    "fieldsToCheck": [
-      "items[].saleType"
-    ],
+    "commonCauses": ["Purchase invoice channel"],
+    "fieldsToCheck": ["items[].saleType"],
     "fix": "Send a valid type. This condition refers to data that is not part of the DI API payload described in the spec; the message comes from FBR's shared validation engine. If you receive it through the DI API, note the exact response and ask PRAL support.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0092)"
@@ -957,12 +658,8 @@
   "0093": {
     "title": "Sale type not allowed for manufacturers",
     "meaning": "The chosen sale type is reserved for other business activities.",
-    "commonCauses": [
-      "Manufacturer using a distribution- or retail-only sale type"
-    ],
-    "fieldsToCheck": [
-      "items[].saleType"
-    ],
+    "commonCauses": ["Manufacturer using a distribution- or retail-only sale type"],
+    "fieldsToCheck": ["items[].saleType"],
     "fix": "Pick a sale type that matches the seller's business activity. `di-doctor scenarios` lists the scenarios (and sale types) per activity.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0093), §10"
@@ -970,12 +667,8 @@
   "0095": {
     "title": "Extra tax is missing",
     "meaning": "extraTax was expected for this sale and was empty.",
-    "commonCauses": [
-      "Sale type that requires extra tax, field left null"
-    ],
-    "fieldsToCheck": [
-      "items[].extraTax"
-    ],
+    "commonCauses": ["Sale type that requires extra tax, field left null"],
+    "fieldsToCheck": ["items[].extraTax"],
     "fix": "Send extraTax as a number (0 when none applies).",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0095)"
@@ -983,30 +676,18 @@
   "0096": {
     "title": "Only the KWH unit is allowed for this HS code",
     "meaning": "Electricity HS codes must use KWH as the unit of measure.",
-    "commonCauses": [
-      "ERP default unit used for electricity lines"
-    ],
-    "fieldsToCheck": [
-      "items[].uoM",
-      "items[].hsCode"
-    ],
+    "commonCauses": ["ERP default unit used for electricity lines"],
+    "fieldsToCheck": ["items[].uoM", "items[].hsCode"],
     "fix": "Set uoM to the KWH description from FBR's UOM list.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0096)",
-    "relatedScenarios": [
-      "SN013"
-    ]
+    "relatedScenarios": ["SN013"]
   },
   "0097": {
     "title": "Unit of measure must be KG",
     "meaning": "This HS code must be reported by weight.",
-    "commonCauses": [
-      "Pieces or units used for a weight-based product"
-    ],
-    "fieldsToCheck": [
-      "items[].uoM",
-      "items[].hsCode"
-    ],
+    "commonCauses": ["Pieces or units used for a weight-based product"],
+    "fieldsToCheck": ["items[].uoM", "items[].hsCode"],
     "fix": "Set uoM to KG as spelled in FBR's UOM list.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0097)"
@@ -1014,18 +695,12 @@
   "0098": {
     "title": "Quantity or electricity units are missing",
     "meaning": "quantity is empty on a line that requires it.",
-    "commonCauses": [
-      "Electricity supply line without units"
-    ],
-    "fieldsToCheck": [
-      "items[].quantity"
-    ],
+    "commonCauses": ["Electricity supply line without units"],
+    "fieldsToCheck": ["items[].quantity"],
     "fix": "Send quantity as a number.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0098)",
-    "relatedScenarios": [
-      "SN013"
-    ]
+    "relatedScenarios": ["SN013"]
   },
   "0099": {
     "title": "Unit of measure does not fit the HS code",
@@ -1034,10 +709,7 @@
       "Using your ERP's own unit names instead of FBR's list",
       "HS code that requires a specific unit (for example KG or KWH)"
     ],
-    "fieldsToCheck": [
-      "items[].uoM",
-      "items[].hsCode"
-    ],
+    "fieldsToCheck": ["items[].uoM", "items[].hsCode"],
     "fix": "Look up the allowed units for the HS code with FBR's HS-to-UOM reference API and copy the description exactly.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0099), §5.6, §5.9"
@@ -1045,73 +717,42 @@
   "0100": {
     "title": "Cotton ginners sale type requires a registered buyer",
     "meaning": "The Cotton Ginners type is only accepted when the buyer is registered.",
-    "commonCauses": [
-      "Unregistered buyer on a cotton ginner purchase"
-    ],
-    "fieldsToCheck": [
-      "buyerRegistrationType",
-      "items[].saleType"
-    ],
+    "commonCauses": ["Unregistered buyer on a cotton ginner purchase"],
+    "fieldsToCheck": ["buyerRegistrationType", "items[].saleType"],
     "fix": "Use a registered buyer, or a different sale type.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0100)",
-    "relatedScenarios": [
-      "SN009"
-    ]
+    "relatedScenarios": ["SN009"]
   },
   "0101": {
     "title": "Steel sector must use the Toll Manufacturing sale type",
     "meaning": "For this steel-sector transaction FBR expects Toll Manufacturing.",
-    "commonCauses": [
-      "Steel melting/re-rolling type chosen where toll manufacturing applies"
-    ],
-    "fieldsToCheck": [
-      "items[].saleType"
-    ],
+    "commonCauses": ["Steel melting/re-rolling type chosen where toll manufacturing applies"],
+    "fieldsToCheck": ["items[].saleType"],
     "fix": "Switch the sale type to Toll Manufacturing for this transaction.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0101)",
-    "relatedScenarios": [
-      "SN011"
-    ]
+    "relatedScenarios": ["SN011"]
   },
   "0102": {
     "title": "Third Schedule tax calculation does not match",
     "meaning": "FBR recomputed the tax with its Third Schedule formula (retail-price based) and got a different number.",
-    "commonCauses": [
-      "Tax computed on the sale value instead of the retail price",
-      "Retail price missing or zero"
-    ],
-    "fieldsToCheck": [
-      "items[].salesTaxApplicable",
-      "items[].fixedNotifiedValueOrRetailPrice",
-      "items[].rate"
-    ],
+    "commonCauses": ["Tax computed on the sale value instead of the retail price", "Retail price missing or zero"],
+    "fieldsToCheck": ["items[].salesTaxApplicable", "items[].fixedNotifiedValueOrRetailPrice", "items[].rate"],
     "fix": "Compute tax on fixedNotifiedValueOrRetailPrice for Third Schedule goods. The exact formula is not in the spec.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0102)",
-    "relatedScenarios": [
-      "SN008",
-      "SN027"
-    ]
+    "relatedScenarios": ["SN008", "SN027"]
   },
   "0103": {
     "title": "Potassium chlorate tax calculation does not match",
     "meaning": "FBR applies a quantity-based formula for potassium chlorate and your amount differs.",
-    "commonCauses": [
-      "Tax computed as a plain percentage"
-    ],
-    "fieldsToCheck": [
-      "items[].salesTaxApplicable",
-      "items[].quantity",
-      "items[].rate"
-    ],
+    "commonCauses": ["Tax computed as a plain percentage"],
+    "fieldsToCheck": ["items[].salesTaxApplicable", "items[].quantity", "items[].rate"],
     "fix": "Compute the tax per the potassium chlorate rule (quantity-based). The formula is not in the spec; ask your tax adviser.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0103)",
-    "relatedScenarios": [
-      "SN022"
-    ]
+    "relatedScenarios": ["SN022"]
   },
   "0104": {
     "title": "Sales tax amount does not match the rate",
@@ -1121,11 +762,7 @@
       "Rounding at invoice level instead of line level",
       "Rate string and the amount come from different sources"
     ],
-    "fieldsToCheck": [
-      "items[].salesTaxApplicable",
-      "items[].valueSalesExcludingST",
-      "items[].rate"
-    ],
+    "fieldsToCheck": ["items[].salesTaxApplicable", "items[].valueSalesExcludingST", "items[].rate"],
     "fix": "Recalculate salesTaxApplicable per line as valueSalesExcludingST multiplied by the percentage in rate, rounded to two decimals.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0104)"
@@ -1133,14 +770,8 @@
   "0105": {
     "title": "Quantity-based tax is incorrect",
     "meaning": "For sale types taxed per unit, the tax does not match quantity times the per-unit amount.",
-    "commonCauses": [
-      "Per-unit rate applied to value instead of quantity"
-    ],
-    "fieldsToCheck": [
-      "items[].salesTaxApplicable",
-      "items[].quantity",
-      "items[].rate"
-    ],
+    "commonCauses": ["Per-unit rate applied to value instead of quantity"],
+    "fieldsToCheck": ["items[].salesTaxApplicable", "items[].quantity", "items[].rate"],
     "fix": "Compute tax as quantity times the per-unit amount in the rate description.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0105)"
@@ -1148,14 +779,8 @@
   "0106": {
     "title": "Buyer is not registered for sales tax",
     "meaning": "The buyer was marked Registered but FBR has no active sales tax registration for that number.",
-    "commonCauses": [
-      "Buyer registered for income tax only",
-      "buyerRegistrationType should be Unregistered"
-    ],
-    "fieldsToCheck": [
-      "buyerNTNCNIC",
-      "buyerRegistrationType"
-    ],
+    "commonCauses": ["Buyer registered for income tax only", "buyerRegistrationType should be Unregistered"],
+    "fieldsToCheck": ["buyerNTNCNIC", "buyerRegistrationType"],
     "fix": "Check the buyer's status (STATL reference API) and set buyerRegistrationType accordingly.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0106)"
@@ -1163,13 +788,8 @@
   "0107": {
     "title": "Buyer registration number does not match",
     "meaning": "The buyer number does not match FBR's record for that buyer.",
-    "commonCauses": [
-      "NTN and CNIC mixed up",
-      "Old number after re-registration"
-    ],
-    "fieldsToCheck": [
-      "buyerNTNCNIC"
-    ],
+    "commonCauses": ["NTN and CNIC mixed up", "Old number after re-registration"],
+    "fieldsToCheck": ["buyerNTNCNIC"],
     "fix": "Verify the buyer's current registration number.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0107)"
@@ -1177,13 +797,8 @@
   "0108": {
     "title": "Seller registration number is not valid",
     "meaning": "sellerNTNCNIC is malformed or unknown to FBR.",
-    "commonCauses": [
-      "Wrong length or non-digit characters",
-      "Leading zeros lost"
-    ],
-    "fieldsToCheck": [
-      "sellerNTNCNIC"
-    ],
+    "commonCauses": ["Wrong length or non-digit characters", "Leading zeros lost"],
+    "fieldsToCheck": ["sellerNTNCNIC"],
     "fix": "Send the seller's 7-digit NTN or 13-digit CNIC as a string of digits.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0108)"
@@ -1191,12 +806,8 @@
   "0109": {
     "title": "Wrong invoice type for this invoice",
     "meaning": "The invoice type does not fit the transaction.",
-    "commonCauses": [
-      "Debit Note sent for a new sale or the other way round"
-    ],
-    "fieldsToCheck": [
-      "invoiceType"
-    ],
+    "commonCauses": ["Debit Note sent for a new sale or the other way round"],
+    "fieldsToCheck": ["invoiceType"],
     "fix": "Use \"Sale Invoice\" for new sales and \"Debit Note\" for adjustments.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0109)"
@@ -1204,12 +815,8 @@
   "0111": {
     "title": "Wrong purchase type selected",
     "meaning": "A purchase-side type does not fit the transaction.",
-    "commonCauses": [
-      "Purchase channel"
-    ],
-    "fieldsToCheck": [
-      "items[].saleType"
-    ],
+    "commonCauses": ["Purchase channel"],
+    "fieldsToCheck": ["items[].saleType"],
     "fix": "This condition refers to data that is not part of the DI API payload described in the spec; the message comes from FBR's shared validation engine. If you receive it through the DI API, note the exact response and ask PRAL support.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0111)"
@@ -1217,13 +824,8 @@
   "0113": {
     "title": "Date could not be parsed",
     "meaning": "FBR could not parse a date field. The long message mentions dd-MMM-yy but the brief message and all samples use YYYY-MM-DD.",
-    "commonCauses": [
-      "Date in a locale format",
-      "Date with time part"
-    ],
-    "fieldsToCheck": [
-      "invoiceDate"
-    ],
+    "commonCauses": ["Date in a locale format", "Date with time part"],
+    "fieldsToCheck": ["invoiceDate"],
     "fix": "Send dates as YYYY-MM-DD.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0113)"
@@ -1231,14 +833,8 @@
   "0156": {
     "title": "NTN or registration number is invalid",
     "meaning": "The registration number on a purchase record is malformed or empty.",
-    "commonCauses": [
-      "Wrong length",
-      "Non-digit characters"
-    ],
-    "fieldsToCheck": [
-      "sellerNTNCNIC",
-      "buyerNTNCNIC"
-    ],
+    "commonCauses": ["Wrong length", "Non-digit characters"],
+    "fieldsToCheck": ["sellerNTNCNIC", "buyerNTNCNIC"],
     "fix": "Send a 7-digit NTN or 13-digit CNIC as a digit string.",
     "side": "purchase",
     "specRef": "spec v1.12 §8 (0156)"
@@ -1246,12 +842,8 @@
   "0157": {
     "title": "Buyer is not registered for sales tax (purchase)",
     "meaning": "The buyer on a purchase record has no active sales tax registration.",
-    "commonCauses": [
-      "Income-tax-only buyer"
-    ],
-    "fieldsToCheck": [
-      "buyerNTNCNIC"
-    ],
+    "commonCauses": ["Income-tax-only buyer"],
+    "fieldsToCheck": ["buyerNTNCNIC"],
     "fix": "Check the buyer's registration status.",
     "side": "purchase",
     "specRef": "spec v1.12 §8 (0157)"
@@ -1259,12 +851,8 @@
   "0158": {
     "title": "Buyer registration number does not match (purchase)",
     "meaning": "The buyer number does not match FBR's record.",
-    "commonCauses": [
-      "Outdated number"
-    ],
-    "fieldsToCheck": [
-      "buyerNTNCNIC"
-    ],
+    "commonCauses": ["Outdated number"],
+    "fieldsToCheck": ["buyerNTNCNIC"],
     "fix": "Verify the buyer's current registration number.",
     "side": "purchase",
     "specRef": "spec v1.12 §8 (0158)"
@@ -1272,12 +860,8 @@
   "0159": {
     "title": "FTN holder cannot be the seller on a purchase",
     "meaning": "Purchases from free-tax-number holders are not accepted through this channel.",
-    "commonCauses": [
-      "Government/FTN supplier"
-    ],
-    "fieldsToCheck": [
-      "sellerNTNCNIC"
-    ],
+    "commonCauses": ["Government/FTN supplier"],
+    "fieldsToCheck": ["sellerNTNCNIC"],
     "fix": "Record this purchase through the process FBR prescribes for FTN suppliers.",
     "side": "purchase",
     "specRef": "spec v1.12 §8 (0159)"
@@ -1285,12 +869,8 @@
   "0160": {
     "title": "Buyer name is missing (purchase)",
     "meaning": "buyerBusinessName is empty.",
-    "commonCauses": [
-      "Field not mapped"
-    ],
-    "fieldsToCheck": [
-      "buyerBusinessName"
-    ],
+    "commonCauses": ["Field not mapped"],
+    "fieldsToCheck": ["buyerBusinessName"],
     "fix": "Send a non-empty buyer name.",
     "side": "purchase",
     "specRef": "spec v1.12 §8 (0160)"
@@ -1298,13 +878,8 @@
   "0161": {
     "title": "Purchase date is earlier than the original sale invoice",
     "meaning": "The purchase record is dated before the sale invoice it relates to.",
-    "commonCauses": [
-      "Back-dated purchase"
-    ],
-    "fieldsToCheck": [
-      "invoiceDate",
-      "invoiceRefNo"
-    ],
+    "commonCauses": ["Back-dated purchase"],
+    "fieldsToCheck": ["invoiceDate", "invoiceRefNo"],
     "fix": "Use a date on or after the original sale invoice date.",
     "side": "purchase",
     "specRef": "spec v1.12 §8 (0161)"
@@ -1312,12 +887,8 @@
   "0162": {
     "title": "Sale type is missing or invalid (purchase)",
     "meaning": "No usable sale type on the purchase line.",
-    "commonCauses": [
-      "Empty or misspelled sale type"
-    ],
-    "fieldsToCheck": [
-      "items[].saleType"
-    ],
+    "commonCauses": ["Empty or misspelled sale type"],
+    "fieldsToCheck": ["items[].saleType"],
     "fix": "Send one of FBR's official sale type strings.",
     "side": "purchase",
     "specRef": "spec v1.12 §8 (0162)"
@@ -1325,12 +896,8 @@
   "0163": {
     "title": "Sale type not allowed for manufacturers (purchase)",
     "meaning": "The chosen sale type is reserved for other business activities.",
-    "commonCauses": [
-      "Manufacturer using a restricted type"
-    ],
-    "fieldsToCheck": [
-      "items[].saleType"
-    ],
+    "commonCauses": ["Manufacturer using a restricted type"],
+    "fieldsToCheck": ["items[].saleType"],
     "fix": "Pick a sale type that matches the business activity.",
     "side": "purchase",
     "specRef": "spec v1.12 §8 (0163)"
@@ -1338,13 +905,8 @@
   "0164": {
     "title": "Only the KWH unit is allowed for this HS code (purchase)",
     "meaning": "Electricity HS codes must use KWH.",
-    "commonCauses": [
-      "Default unit used"
-    ],
-    "fieldsToCheck": [
-      "items[].uoM",
-      "items[].hsCode"
-    ],
+    "commonCauses": ["Default unit used"],
+    "fieldsToCheck": ["items[].uoM", "items[].hsCode"],
     "fix": "Set uoM to KWH as spelled in FBR's UOM list.",
     "side": "purchase",
     "specRef": "spec v1.12 §8 (0164)"
@@ -1352,13 +914,8 @@
   "0165": {
     "title": "Unit of measure must be KG (purchase)",
     "meaning": "This HS code must be reported by weight.",
-    "commonCauses": [
-      "Pieces used for a weight-based product"
-    ],
-    "fieldsToCheck": [
-      "items[].uoM",
-      "items[].hsCode"
-    ],
+    "commonCauses": ["Pieces used for a weight-based product"],
+    "fieldsToCheck": ["items[].uoM", "items[].hsCode"],
     "fix": "Set uoM to KG.",
     "side": "purchase",
     "specRef": "spec v1.12 §8 (0165)"
@@ -1366,12 +923,8 @@
   "0166": {
     "title": "Quantity or electricity units are missing (purchase)",
     "meaning": "quantity is empty on a purchase line that requires it (for example electricity units).",
-    "commonCauses": [
-      "Electricity line without units"
-    ],
-    "fieldsToCheck": [
-      "items[].quantity"
-    ],
+    "commonCauses": ["Electricity line without units"],
+    "fieldsToCheck": ["items[].quantity"],
     "fix": "Send quantity as a number.",
     "side": "purchase",
     "specRef": "spec v1.12 §8 (0166)"
@@ -1379,12 +932,8 @@
   "0167": {
     "title": "Value excluding sales tax is missing (purchase)",
     "meaning": "valueSalesExcludingST is empty or invalid.",
-    "commonCauses": [
-      "Sent as null or string"
-    ],
-    "fieldsToCheck": [
-      "items[].valueSalesExcludingST"
-    ],
+    "commonCauses": ["Sent as null or string"],
+    "fieldsToCheck": ["items[].valueSalesExcludingST"],
     "fix": "Send it as a JSON number.",
     "side": "purchase",
     "specRef": "spec v1.12 §8 (0167)"
@@ -1392,13 +941,8 @@
   "0168": {
     "title": "Cotton ginners type requires a registered buyer (purchase)",
     "meaning": "Only registered buyers may use the cotton ginner purchase type.",
-    "commonCauses": [
-      "Unregistered buyer"
-    ],
-    "fieldsToCheck": [
-      "buyerRegistrationType",
-      "items[].saleType"
-    ],
+    "commonCauses": ["Unregistered buyer"],
+    "fieldsToCheck": ["buyerRegistrationType", "items[].saleType"],
     "fix": "Use a registered buyer or a different type.",
     "side": "purchase",
     "specRef": "spec v1.12 §8 (0168)"
@@ -1406,12 +950,8 @@
   "0169": {
     "title": "Withholding only for government or FTN holders (purchase)",
     "meaning": "Withholding-only purchase entries are reserved for government/FTN holders.",
-    "commonCauses": [
-      "Normal taxpayer declaring withholding without the invoice"
-    ],
-    "fieldsToCheck": [
-      "buyerNTNCNIC"
-    ],
+    "commonCauses": ["Normal taxpayer declaring withholding without the invoice"],
+    "fieldsToCheck": ["buyerNTNCNIC"],
     "fix": "Record the purchase invoice itself first.",
     "side": "purchase",
     "specRef": "spec v1.12 §8 (0169)"
@@ -1419,13 +959,8 @@
   "0170": {
     "title": "5% rate not allowed above 20,000 (purchase)",
     "meaning": "The reduced 5% rate cannot be used when the line value excluding tax is above 20,000.",
-    "commonCauses": [
-      "Large line value at 5%"
-    ],
-    "fieldsToCheck": [
-      "items[].rate",
-      "items[].valueSalesExcludingST"
-    ],
+    "commonCauses": ["Large line value at 5%"],
+    "fieldsToCheck": ["items[].rate", "items[].valueSalesExcludingST"],
     "fix": "Use the rate that applies above the limit; a tax question.",
     "side": "purchase",
     "specRef": "spec v1.12 §8 (0170)"
@@ -1433,12 +968,8 @@
   "0171": {
     "title": "Not an EFS licence holder who imported compressor scrap (purchase)",
     "meaning": "A type restricted to Export Facilitation Scheme licence holders with qualifying imports.",
-    "commonCauses": [
-      "Type chosen without the licence"
-    ],
-    "fieldsToCheck": [
-      "items[].saleType"
-    ],
+    "commonCauses": ["Type chosen without the licence"],
+    "fieldsToCheck": ["items[].saleType"],
     "fix": "Use a different type unless the licence and imports apply.",
     "side": "purchase",
     "specRef": "spec v1.12 §8 (0171)"
@@ -1446,13 +977,8 @@
   "0172": {
     "title": "Petroleum levy rates are not configured (purchase)",
     "meaning": "FBR's petroleum levy rates were not available.",
-    "commonCauses": [
-      "Incomplete rate table on FBR's side"
-    ],
-    "fieldsToCheck": [
-      "items[].saleType",
-      "items[].rate"
-    ],
+    "commonCauses": ["Incomplete rate table on FBR's side"],
+    "fieldsToCheck": ["items[].saleType", "items[].rate"],
     "fix": "Retry later or contact PRAL.",
     "side": "purchase",
     "specRef": "spec v1.12 §8 (0172)"
@@ -1460,9 +986,7 @@
   "0173": {
     "title": "Invoice number format is not accepted (purchase)",
     "meaning": "Invoice numbers may contain letters, digits and dashes, with dashes only between characters.",
-    "commonCauses": [
-      "Leading/trailing dash or other symbols"
-    ],
+    "commonCauses": ["Leading/trailing dash or other symbols"],
     "fieldsToCheck": [],
     "fix": "Use a format like INV-001.",
     "side": "purchase",
@@ -1471,12 +995,8 @@
   "0174": {
     "title": "Sales tax is missing (purchase)",
     "meaning": "salesTaxApplicable is empty.",
-    "commonCauses": [
-      "Sent as null"
-    ],
-    "fieldsToCheck": [
-      "items[].salesTaxApplicable"
-    ],
+    "commonCauses": ["Sent as null"],
+    "fieldsToCheck": ["items[].salesTaxApplicable"],
     "fix": "Send it as a number, 0 if none.",
     "side": "purchase",
     "specRef": "spec v1.12 §8 (0174)"
@@ -1484,12 +1004,8 @@
   "0175": {
     "title": "Fixed/notified value or retail price is missing (purchase)",
     "meaning": "fixedNotifiedValueOrRetailPrice is empty.",
-    "commonCauses": [
-      "Sent as null"
-    ],
-    "fieldsToCheck": [
-      "items[].fixedNotifiedValueOrRetailPrice"
-    ],
+    "commonCauses": ["Sent as null"],
+    "fieldsToCheck": ["items[].fixedNotifiedValueOrRetailPrice"],
     "fix": "Send it as a number, 0 when not applicable.",
     "side": "purchase",
     "specRef": "spec v1.12 §8 (0175)"
@@ -1497,12 +1013,8 @@
   "0176": {
     "title": "Sales tax withheld at source is missing (purchase)",
     "meaning": "salesTaxWithheldAtSource is empty.",
-    "commonCauses": [
-      "Sent as null"
-    ],
-    "fieldsToCheck": [
-      "items[].salesTaxWithheldAtSource"
-    ],
+    "commonCauses": ["Sent as null"],
+    "fieldsToCheck": ["items[].salesTaxWithheldAtSource"],
     "fix": "Send it as a number, 0 when nothing is withheld.",
     "side": "purchase",
     "specRef": "spec v1.12 §8 (0176)"
@@ -1510,12 +1022,8 @@
   "0177": {
     "title": "Further tax is missing (purchase)",
     "meaning": "furtherTax is empty where it was expected.",
-    "commonCauses": [
-      "Sent as null"
-    ],
-    "fieldsToCheck": [
-      "items[].furtherTax"
-    ],
+    "commonCauses": ["Sent as null"],
+    "fieldsToCheck": ["items[].furtherTax"],
     "fix": "Send furtherTax as a number, 0 when none applies.",
     "side": "purchase",
     "specRef": "spec v1.12 §8 (0177)"
@@ -1549,10 +1057,7 @@
       "Token issued for a different NTN",
       "Seller number with wrong length or non-digit characters"
     ],
-    "fieldsToCheck": [
-      "sellerNTNCNIC",
-      "Authorization header"
-    ],
+    "fieldsToCheck": ["sellerNTNCNIC", "Authorization header"],
     "fix": "Confirm the token was issued for this exact seller number and environment, and that the number is digits only.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0401), §3.1"
@@ -1560,14 +1065,8 @@
   "0402": {
     "title": "Buyer is not authorised for this token",
     "meaning": "Same idea as 0401 but for the buyer: the buyer number has the wrong length or no authorised token exists for it.",
-    "commonCauses": [
-      "Buyer number not 7 or 13 digits",
-      "Scenario that expects a specific registered buyer in sandbox"
-    ],
-    "fieldsToCheck": [
-      "buyerNTNCNIC",
-      "buyerRegistrationType"
-    ],
+    "commonCauses": ["Buyer number not 7 or 13 digits", "Scenario that expects a specific registered buyer in sandbox"],
+    "fieldsToCheck": ["buyerNTNCNIC", "buyerRegistrationType"],
     "fix": "Check the buyer number is digits only and of the right length. In sandbox, use the buyer details FBR provided for testing.",
     "side": "sale",
     "specRef": "spec v1.12 §7 (0402)"

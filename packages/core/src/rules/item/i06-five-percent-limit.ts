@@ -16,7 +16,13 @@ export const i06FivePercentLimit: Rule = {
     const f = findings(this);
     const path = `items[${index}].rate`;
     if (pct === 5 && value > 20000) {
-      return [f.fail(path, `rate is 5% but valueSalesExcludingST ${value.toFixed(2)} is above 20,000.`, 'FBR does not accept 5% above that value. Which rate applies instead is a tax question; check with your tax adviser.')];
+      return [
+        f.fail(
+          path,
+          `rate is 5% but valueSalesExcludingST ${value.toFixed(2)} is above 20,000.`,
+          'FBR does not accept 5% above that value. Which rate applies instead is a tax question; check with your tax adviser.',
+        ),
+      ];
     }
     return [f.pass(path, '5%-above-20,000 rule does not apply.')];
   },

@@ -7,7 +7,9 @@ import errors from '../data/errors.json' with { type: 'json' };
 type Entry = Omit<ErrorExplanation, 'code' | 'known'>;
 const table = errors as unknown as Record<string, Entry | string>;
 
-export const KNOWN_ERROR_CODES: string[] = Object.keys(table).filter((k) => !k.startsWith('_')).sort();
+export const KNOWN_ERROR_CODES: string[] = Object.keys(table)
+  .filter((k) => !k.startsWith('_'))
+  .sort();
 
 /** Every known code with its one-line title, for `di-doctor codes`. */
 export function listErrorCodes(): { code: string; title: string; side: 'sale' | 'purchase' }[] {
@@ -30,9 +32,12 @@ export function explainCode(code: string): ErrorExplanation {
   return {
     code: c,
     known: false,
-    title: 'Error code not in DI Doctor\'s list',
+    title: "Error code not in DI Doctor's list",
     meaning: `DI Doctor has no explanation for code ${c} yet. The official list of sales error codes is in spec v1.12 §7 and purchase codes in §8.`,
-    commonCauses: ['The code may be newer than the document version DI Doctor follows', 'Live responses sometimes use codes or wording not in the document'],
+    commonCauses: [
+      'The code may be newer than the document version DI Doctor follows',
+      'Live responses sometimes use codes or wording not in the document',
+    ],
     fieldsToCheck: [],
     fix: `Read the "error" text in the FBR response alongside the code, then look it up in the official document: ${SPEC_URL}`,
     specRef: ref('7, §8'),

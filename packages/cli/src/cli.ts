@@ -3,7 +3,18 @@
 import { readFileSync } from 'node:fs';
 import { Command, InvalidArgumentError } from 'commander';
 import type { Finding, ErrorExplanation, ResponseCheck } from '@di-doctor/core';
-import { SPEC_VERSION, SPEC_URL, RULES, checkResponse, validateInvoice, explainCode, explainResponse, listErrorCodes, listScenarios, simulate } from '@di-doctor/core';
+import {
+  SPEC_VERSION,
+  SPEC_URL,
+  RULES,
+  checkResponse,
+  validateInvoice,
+  explainCode,
+  explainResponse,
+  listErrorCodes,
+  listScenarios,
+  simulate,
+} from '@di-doctor/core';
 import { createServer, listen } from './serve.js';
 
 const EXIT_OK = 0;
@@ -41,16 +52,20 @@ function printResponse(r: ResponseCheck): void {
   const label = r.overall === 'valid' ? green('VALID') : r.overall === 'invalid' ? red('INVALID') : yellow('UNKNOWN');
   console.log(`${bold('Overall:')} ${label}  ${dim(`(${r.kind} response)`)}`);
   if (r.fbrInvoiceNumber) console.log(`${bold('FBR invoice number:')} ${r.fbrInvoiceNumber}`);
-  for (const p of r.problems) console.log(`${red('✗')} ${p.where}${p.errorCode ? ` [${p.errorCode}]` : ''}: ${p.message}`);
+  for (const p of r.problems)
+    console.log(`${red('✗')} ${p.where}${p.errorCode ? ` [${p.errorCode}]` : ''}: ${p.message}`);
   for (const w of r.warnings) console.log(`${yellow('!')} ${w}`);
   if (r.items.length) {
     console.log(bold('Items:'));
     for (const it of r.items) {
       const mark = it.status === 'valid' ? green('✓') : it.status === 'invalid' ? red('✗') : yellow('?');
-      console.log(`  ${mark} item ${it.itemSNo}${it.invoiceNo ? ` ${dim(it.invoiceNo)}` : ''}${it.errorCode ? ` [${it.errorCode}] ${it.error ?? ''}` : ''}`);
+      console.log(
+        `  ${mark} item ${it.itemSNo}${it.invoiceNo ? ` ${dim(it.invoiceNo)}` : ''}${it.errorCode ? ` [${it.errorCode}] ${it.error ?? ''}` : ''}`,
+      );
     }
   }
-  if (r.problems.some((p) => p.errorCode)) console.log(dim('Tip: run `di-doctor explain <file>` for plain-English explanations of these codes.'));
+  if (r.problems.some((p) => p.errorCode))
+    console.log(dim('Tip: run `di-doctor explain <file>` for plain-English explanations of these codes.'));
   console.log(footer());
 }
 
@@ -58,14 +73,20 @@ function printResponse(r: ResponseCheck): void {
  * Failures and warnings are always printed in full. cannot-verify findings are grouped per rule unless --verbose,
  * because they repeat for every item and would bury the real problems.
  */
-function printFindings(findings: Finding[], summary: { pass: number; fail: number; warnings: number; cannotVerify: number }, verbose: boolean): void {
+function printFindings(
+  findings: Finding[],
+  summary: { pass: number; fail: number; warnings: number; cannotVerify: number },
+  verbose: boolean,
+): void {
   const order = (f: Finding) => (f.verdict === 'fail' ? (f.severity === 'warning' ? 1 : 0) : 2);
   const shown = findings.filter((f) => f.verdict !== 'pass').sort((a, b) => order(a) - order(b));
   const groups = new Map<string, Finding[]>();
   for (const f of shown) {
     if (f.verdict === 'fail') {
       const mark = f.severity === 'warning' ? yellow('!') : red('✗');
-      console.log(`${mark} ${f.path}  ${dim(`(${f.ruleId}, ${f.specRef}${f.errorCode ? `, FBR code ${f.errorCode}` : ''})`)}`);
+      console.log(
+        `${mark} ${f.path}  ${dim(`(${f.ruleId}, ${f.specRef}${f.errorCode ? `, FBR code ${f.errorCode}` : ''})`)}`,
+      );
       console.log(`  Problem: ${f.message}`);
       if (f.fix) console.log(`  Fix:     ${f.fix}`);
     } else if (verbose) {
@@ -107,14 +128,17 @@ function printExplanation(e: ErrorExplanation): void {
 const program = new Command();
 program
   .name('di-doctor')
-  .description('Unofficial toolkit for Pakistan FBR Digital Invoicing: read responses safely, validate payloads offline, explain errors, list sandbox scenarios.')
+  .description(
+    'Unofficial toolkit for Pakistan FBR Digital Invoicing: read responses safely, validate payloads offline, explain errors, list sandbox scenarios.',
+  )
   .version('0.0.1')
   .option('--json', 'machine-readable JSON output')
   .option('--verbose', 'show every cannot-verify finding instead of grouping them per rule')
   .option('--no-color', 'disable colours')
   // Must be set before .command() calls: subcommands copy exit settings when they are created.
   .exitOverride((err) => {
-    if (err.code === 'commander.helpDisplayed' || err.code === 'commander.version' || err.code === 'commander.help') process.exit(EXIT_OK);
+    if (err.code === 'commander.helpDisplayed' || err.code === 'commander.version' || err.code === 'commander.help')
+      process.exit(EXIT_OK);
     process.exit(EXIT_USAGE);
   });
 
@@ -150,17 +174,19 @@ program
   })
   .option('--activity <name>', 'seller business activity (enables the scenario-applicability check, spec §10)')
   .option('--sector <name>', 'seller sector')
-  .action((file: string, o: { env: 'sandbox' | 'production'; tolerance?: number; activity?: string; sector?: string }) => {
-    const r = validateInvoice(readJson(file), {
-      environment: o.env,
-      ...(o.tolerance !== undefined ? { taxTolerance: o.tolerance } : {}),
-      ...(o.activity !== undefined ? { activity: o.activity } : {}),
-      ...(o.sector !== undefined ? { sector: o.sector } : {}),
-    });
-    if (program.opts()['json']) console.log(JSON.stringify(r, null, 2));
-    else printFindings(r.findings, r.summary, Boolean(program.opts()['verbose']));
-    process.exitCode = r.summary.fail > 0 ? EXIT_FAIL : EXIT_OK;
-  });
+  .action(
+    (file: string, o: { env: 'sandbox' | 'production'; tolerance?: number; activity?: string; sector?: string }) => {
+      const r = validateInvoice(readJson(file), {
+        environment: o.env,
+        ...(o.tolerance !== undefined ? { taxTolerance: o.tolerance } : {}),
+        ...(o.activity !== undefined ? { activity: o.activity } : {}),
+        ...(o.sector !== undefined ? { sector: o.sector } : {}),
+      });
+      if (program.opts()['json']) console.log(JSON.stringify(r, null, 2));
+      else printFindings(r.findings, r.summary, Boolean(program.opts()['verbose']));
+      process.exitCode = r.summary.fail > 0 ? EXIT_FAIL : EXIT_OK;
+    },
+  );
 
 program
   .command('explain')
@@ -211,11 +237,14 @@ const envParser = (v: string) => {
   if (v !== 'sandbox' && v !== 'production') throw new InvalidArgumentError('must be "sandbox" or "production"');
   return v;
 };
-const numParser = (what: string, min = 0, max = Infinity) => (v: string) => {
-  const n = Number(v);
-  if (!Number.isFinite(n) || n < min || n > max) throw new InvalidArgumentError(`${what} must be a number between ${min} and ${max}`);
-  return n;
-};
+const numParser =
+  (what: string, min = 0, max = Infinity) =>
+  (v: string) => {
+    const n = Number(v);
+    if (!Number.isFinite(n) || n < min || n > max)
+      throw new InvalidArgumentError(`${what} must be a number between ${min} and ${max}`);
+    return n;
+  };
 
 program
   .command('simulate')
@@ -230,26 +259,46 @@ program
   .option('--activity <name>', 'seller business activity (enables the scenario-applicability check)')
   .option('--sector <name>', 'seller sector')
   .option('--tolerance <pkr>', 'allowed sales-tax rounding difference in PKR (default 1.00)', numParser('tolerance'))
-  .action((file: string, o: { env: 'sandbox' | 'production'; endpoint?: 'post' | 'validate'; strictShape?: boolean; activity?: string; sector?: string; tolerance?: number }) => {
-    const r = simulate(readJson(file), {
-      environment: o.env,
-      endpoint: o.endpoint ?? 'post',
-      now: Date.now(),
-      ...(o.strictShape ? { strictShape: true } : {}),
-      ...(o.activity !== undefined ? { activity: o.activity } : {}),
-      ...(o.sector !== undefined ? { sector: o.sector } : {}),
-      ...(o.tolerance !== undefined ? { taxTolerance: o.tolerance } : {}),
-    });
-    if (program.opts()['json']) console.log(JSON.stringify(r, null, 2));
-    else {
-      console.log(bold(`Simulated ${o.endpoint ?? 'post'} response (${o.env}): `) + (r.result === 'valid' ? green('VALID') : red('INVALID')));
-      console.log(JSON.stringify(r.body, null, 2));
-      if (r.diagnostics.length) console.log(yellow(`! ${r.diagnostics.length} diagnostic(s) the simulator cannot judge; run \`di-doctor validate\` for details.`));
-      console.log(dim('Passing the simulator does not guarantee FBR acceptance.'));
-      console.log(footer());
-    }
-    process.exitCode = r.result === 'valid' ? EXIT_OK : EXIT_FAIL;
-  });
+  .action(
+    (
+      file: string,
+      o: {
+        env: 'sandbox' | 'production';
+        endpoint?: 'post' | 'validate';
+        strictShape?: boolean;
+        activity?: string;
+        sector?: string;
+        tolerance?: number;
+      },
+    ) => {
+      const r = simulate(readJson(file), {
+        environment: o.env,
+        endpoint: o.endpoint ?? 'post',
+        now: Date.now(),
+        ...(o.strictShape ? { strictShape: true } : {}),
+        ...(o.activity !== undefined ? { activity: o.activity } : {}),
+        ...(o.sector !== undefined ? { sector: o.sector } : {}),
+        ...(o.tolerance !== undefined ? { taxTolerance: o.tolerance } : {}),
+      });
+      if (program.opts()['json']) console.log(JSON.stringify(r, null, 2));
+      else {
+        console.log(
+          bold(`Simulated ${o.endpoint ?? 'post'} response (${o.env}): `) +
+            (r.result === 'valid' ? green('VALID') : red('INVALID')),
+        );
+        console.log(JSON.stringify(r.body, null, 2));
+        if (r.diagnostics.length)
+          console.log(
+            yellow(
+              `! ${r.diagnostics.length} diagnostic(s) the simulator cannot judge; run \`di-doctor validate\` for details.`,
+            ),
+          );
+        console.log(dim('Passing the simulator does not guarantee FBR acceptance.'));
+        console.log(footer());
+      }
+      process.exitCode = r.result === 'valid' ? EXIT_OK : EXIT_FAIL;
+    },
+  );
 
 program
   .command('serve')
@@ -263,35 +312,51 @@ program
   .option('--activity <name>', 'seller business activity (enables the scenario-applicability check)')
   .option('--sector <name>', 'seller sector')
   .option('--tolerance <pkr>', 'allowed sales-tax rounding difference in PKR (default 1.00)', numParser('tolerance'))
-  .action(async (o: { port?: number; host?: string; token?: string; chaos?: number; latency?: number; strictShape?: boolean; activity?: string; sector?: string; tolerance?: number }) => {
-    const opts = {
-      ...(o.port !== undefined ? { port: o.port } : {}),
-      ...(o.host !== undefined ? { host: o.host } : {}),
-      ...(o.token !== undefined ? { token: o.token } : {}),
-      ...(o.chaos !== undefined ? { chaos: o.chaos } : {}),
-      ...(o.latency !== undefined ? { latency: o.latency } : {}),
-      ...(o.strictShape ? { strictShape: true } : {}),
-      ...(o.activity !== undefined ? { activity: o.activity } : {}),
-      ...(o.sector !== undefined ? { sector: o.sector } : {}),
-      ...(o.tolerance !== undefined ? { taxTolerance: o.tolerance } : {}),
-      log: (line: string) => console.log(dim(new Date().toISOString()) + '  ' + line),
-    };
-    const server = createServer(opts);
-    try {
-      const { port, host } = await listen(server, opts);
-      console.log(`${bold('DI Doctor sandbox simulator')} listening on http://${host}:${port}`);
-      console.log('  POST /di_data/v1/di/postinvoicedata_sb       sandbox post');
-      console.log('  POST /di_data/v1/di/validateinvoicedata_sb   sandbox validate');
-      console.log('  POST /di_data/v1/di/postinvoicedata          production post');
-      console.log('  POST /di_data/v1/di/validateinvoicedata      production validate');
-      console.log('  GET  /_health');
-      console.log(dim('Send "Authorization: Bearer <any token>". Point your ERP base URL here and keep the same paths. Ctrl+C to stop.'));
-      console.log(footer());
-    } catch (e) {
-      console.error(`Cannot start server: ${(e as Error).message}`);
-      process.exitCode = EXIT_USAGE;
-    }
-  });
+  .action(
+    async (o: {
+      port?: number;
+      host?: string;
+      token?: string;
+      chaos?: number;
+      latency?: number;
+      strictShape?: boolean;
+      activity?: string;
+      sector?: string;
+      tolerance?: number;
+    }) => {
+      const opts = {
+        ...(o.port !== undefined ? { port: o.port } : {}),
+        ...(o.host !== undefined ? { host: o.host } : {}),
+        ...(o.token !== undefined ? { token: o.token } : {}),
+        ...(o.chaos !== undefined ? { chaos: o.chaos } : {}),
+        ...(o.latency !== undefined ? { latency: o.latency } : {}),
+        ...(o.strictShape ? { strictShape: true } : {}),
+        ...(o.activity !== undefined ? { activity: o.activity } : {}),
+        ...(o.sector !== undefined ? { sector: o.sector } : {}),
+        ...(o.tolerance !== undefined ? { taxTolerance: o.tolerance } : {}),
+        log: (line: string) => console.log(dim(new Date().toISOString()) + '  ' + line),
+      };
+      const server = createServer(opts);
+      try {
+        const { port, host } = await listen(server, opts);
+        console.log(`${bold('DI Doctor sandbox simulator')} listening on http://${host}:${port}`);
+        console.log('  POST /di_data/v1/di/postinvoicedata_sb       sandbox post');
+        console.log('  POST /di_data/v1/di/validateinvoicedata_sb   sandbox validate');
+        console.log('  POST /di_data/v1/di/postinvoicedata          production post');
+        console.log('  POST /di_data/v1/di/validateinvoicedata      production validate');
+        console.log('  GET  /_health');
+        console.log(
+          dim(
+            'Send "Authorization: Bearer <any token>". Point your ERP base URL here and keep the same paths. Ctrl+C to stop.',
+          ),
+        );
+        console.log(footer());
+      } catch (e) {
+        console.error(`Cannot start server: ${(e as Error).message}`);
+        process.exitCode = EXIT_USAGE;
+      }
+    },
+  );
 
 program
   .command('mcp')
@@ -307,19 +372,41 @@ program
   .option('--markdown', 'print as a Markdown table (used to generate docs/rules.md)')
   .action((o: { markdown?: boolean }) => {
     if (program.opts()['json']) {
-      console.log(JSON.stringify(RULES.map(({ id, title, specRef, level, errorCode }) => ({ id, title, specRef, level, errorCode: errorCode ?? null })), null, 2));
+      console.log(
+        JSON.stringify(
+          RULES.map(({ id, title, specRef, level, errorCode }) => ({
+            id,
+            title,
+            specRef,
+            level,
+            errorCode: errorCode ?? null,
+          })),
+          null,
+          2,
+        ),
+      );
     } else if (o.markdown) {
       console.log('# Validation rules');
       console.log('');
-      console.log(`Generated by \`pnpm docs:rules\` from the rule registry. Spec v${SPEC_VERSION}. Do not edit by hand.`);
+      console.log(
+        `Generated by \`pnpm docs:rules\` from the rule registry. Spec v${SPEC_VERSION}. Do not edit by hand.`,
+      );
       console.log('');
-      console.log('Every rule returns `pass`, `fail` or `cannot-verify`. Failures are `error` (exit code 1, simulator rejects) or `warning` (reported only). The code column is the FBR error code the spec ties to the failure; the simulator emits it.');
+      console.log(
+        'Every rule returns `pass`, `fail` or `cannot-verify`. Failures are `error` (exit code 1, simulator rejects) or `warning` (reported only). The code column is the FBR error code the spec ties to the failure; the simulator emits it.',
+      );
       console.log('');
       console.log('| ID | Level | Rule | Spec | Code |');
       console.log('|---|---|---|---|---|');
-      for (const r of RULES) console.log(`| ${r.id} | ${r.level} | ${r.title.replace(/\|/g, '\\|')} | ${r.specRef.replace(/^spec v[\d.]+ /, '')} | ${r.errorCode ?? ''} |`);
+      for (const r of RULES)
+        console.log(
+          `| ${r.id} | ${r.level} | ${r.title.replace(/\|/g, '\\|')} | ${r.specRef.replace(/^spec v[\d.]+ /, '')} | ${r.errorCode ?? ''} |`,
+        );
     } else {
-      for (const r of RULES) console.log(`${bold(r.id)}  ${r.title}\n      ${dim(`${r.level} · ${r.specRef}${r.errorCode ? ` · code ${r.errorCode}` : ''}`)}`);
+      for (const r of RULES)
+        console.log(
+          `${bold(r.id)}  ${r.title}\n      ${dim(`${r.level} · ${r.specRef}${r.errorCode ? ` · code ${r.errorCode}` : ''}`)}`,
+        );
       console.log(footer());
     }
     process.exitCode = EXIT_OK;
@@ -333,7 +420,8 @@ program
     const list = listErrorCodes().filter((c) => o.side === 'all' || c.side === o.side);
     if (program.opts()['json']) console.log(JSON.stringify(list, null, 2));
     else {
-      for (const c of list) console.log(`${bold(c.code)}  ${c.title}${c.side === 'purchase' ? dim('  (purchase)') : ''}`);
+      for (const c of list)
+        console.log(`${bold(c.code)}  ${c.title}${c.side === 'purchase' ? dim('  (purchase)') : ''}`);
       console.log(dim(`${list.length} codes. Run \`di-doctor explain <code>\` for details.`));
       console.log(footer());
     }

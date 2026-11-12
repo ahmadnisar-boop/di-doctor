@@ -3,7 +3,32 @@
   "version": "0.1.0",
   "description": "Pure validation, response checking, error explanations, scenarios and sandbox simulator for Pakistan FBR Digital Invoicing (unofficial).",
   "license": "MIT",
+  "author": "Ahmad Nisar <ahmadnisar3790@gmail.com>",
+  "homepage": "https://github.com/ahmadnisar-boop/di-doctor#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ahmadnisar-boop/di-doctor",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/ahmadnisar-boop/di-doctor/issues"
+  },
+  "keywords": [
+    "fbr",
+    "pakistan",
+    "digital-invoicing",
+    "sales-tax",
+    "pral",
+    "invoice-validation",
+    "typescript"
+  ],
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "sideEffects": false,
   "exports": {
     ".": {
@@ -18,10 +43,5 @@
   "scripts": {
     "build": "tsup",
     "lint": "tsc --noEmit -p ."
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ahmadnisar-boop/di-doctor",
-    "directory": "packages/core"
   }
 }

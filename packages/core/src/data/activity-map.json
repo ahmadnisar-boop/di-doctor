@@ -40,11 +40,7 @@
         "SN022",
         "SN024"
       ],
-      "Steel": [
-        "SN003",
-        "SN004",
-        "SN011"
-      ],
+      "Steel": ["SN003", "SN004", "SN011"],
       "FMCG": [
         "SN001",
         "SN002",
@@ -788,93 +784,18 @@
         "SN028",
         "SN008"
       ],
-      "Steel": [
-        "SN003",
-        "SN004",
-        "SN011",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "FMCG": [
-        "SN008",
-        "SN026",
-        "SN027",
-        "SN028"
-      ],
-      "Textile": [
-        "SN009",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Telecom": [
-        "SN010",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Petroleum": [
-        "SN012",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Electricity Distribution": [
-        "SN013",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Gas Distribution": [
-        "SN014",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Services": [
-        "SN018",
-        "SN019",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Automobile": [
-        "SN020",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "CNG Stations": [
-        "SN023",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Pharmaceuticals": [
-        "SN025",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Wholesale / Retails": [
-        "SN001",
-        "SN002",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ]
+      "Steel": ["SN003", "SN004", "SN011", "SN026", "SN027", "SN028", "SN008"],
+      "FMCG": ["SN008", "SN026", "SN027", "SN028"],
+      "Textile": ["SN009", "SN026", "SN027", "SN028", "SN008"],
+      "Telecom": ["SN010", "SN026", "SN027", "SN028", "SN008"],
+      "Petroleum": ["SN012", "SN026", "SN027", "SN028", "SN008"],
+      "Electricity Distribution": ["SN013", "SN026", "SN027", "SN028", "SN008"],
+      "Gas Distribution": ["SN014", "SN026", "SN027", "SN028", "SN008"],
+      "Services": ["SN018", "SN019", "SN026", "SN027", "SN028", "SN008"],
+      "Automobile": ["SN020", "SN026", "SN027", "SN028", "SN008"],
+      "CNG Stations": ["SN023", "SN026", "SN027", "SN028", "SN008"],
+      "Pharmaceuticals": ["SN025", "SN026", "SN027", "SN028", "SN008"],
+      "Wholesale / Retails": ["SN001", "SN002", "SN026", "SN027", "SN028", "SN008"]
     },
     "Wholesaler": {
       "All Other Sectors": [
@@ -894,93 +815,18 @@
         "SN028",
         "SN008"
       ],
-      "Steel": [
-        "SN003",
-        "SN004",
-        "SN011",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "FMCG": [
-        "SN008",
-        "SN026",
-        "SN027",
-        "SN028"
-      ],
-      "Textile": [
-        "SN009",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Telecom": [
-        "SN010",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Petroleum": [
-        "SN012",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Electricity Distribution": [
-        "SN013",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Gas Distribution": [
-        "SN014",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Services": [
-        "SN018",
-        "SN019",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Automobile": [
-        "SN020",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "CNG Stations": [
-        "SN023",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Pharmaceuticals": [
-        "SN025",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Wholesale / Retails": [
-        "SN001",
-        "SN002",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ]
+      "Steel": ["SN003", "SN004", "SN011", "SN026", "SN027", "SN028", "SN008"],
+      "FMCG": ["SN008", "SN026", "SN027", "SN028"],
+      "Textile": ["SN009", "SN026", "SN027", "SN028", "SN008"],
+      "Telecom": ["SN010", "SN026", "SN027", "SN028", "SN008"],
+      "Petroleum": ["SN012", "SN026", "SN027", "SN028", "SN008"],
+      "Electricity Distribution": ["SN013", "SN026", "SN027", "SN028", "SN008"],
+      "Gas Distribution": ["SN014", "SN026", "SN027", "SN028", "SN008"],
+      "Services": ["SN018", "SN019", "SN026", "SN027", "SN028", "SN008"],
+      "Automobile": ["SN020", "SN026", "SN027", "SN028", "SN008"],
+      "CNG Stations": ["SN023", "SN026", "SN027", "SN028", "SN008"],
+      "Pharmaceuticals": ["SN025", "SN026", "SN027", "SN028", "SN008"],
+      "Wholesale / Retails": ["SN001", "SN002", "SN026", "SN027", "SN028", "SN008"]
     },
     "Retailer": {
       "All Other Sectors": [
@@ -1000,87 +846,18 @@
         "SN028",
         "SN008"
       ],
-      "Steel": [
-        "SN003",
-        "SN004",
-        "SN011"
-      ],
-      "FMCG": [
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Textile": [
-        "SN009",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Telecom": [
-        "SN010",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Petroleum": [
-        "SN012",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Electricity Distribution": [
-        "SN013",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Gas Distribution": [
-        "SN014",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Services": [
-        "SN018",
-        "SN019",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Automobile": [
-        "SN020",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "CNG Stations": [
-        "SN023",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Pharmaceuticals": [
-        "SN025",
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ],
-      "Wholesale / Retails": [
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008"
-      ]
+      "Steel": ["SN003", "SN004", "SN011"],
+      "FMCG": ["SN026", "SN027", "SN028", "SN008"],
+      "Textile": ["SN009", "SN026", "SN027", "SN028", "SN008"],
+      "Telecom": ["SN010", "SN026", "SN027", "SN028", "SN008"],
+      "Petroleum": ["SN012", "SN026", "SN027", "SN028", "SN008"],
+      "Electricity Distribution": ["SN013", "SN026", "SN027", "SN028", "SN008"],
+      "Gas Distribution": ["SN014", "SN026", "SN027", "SN028", "SN008"],
+      "Services": ["SN018", "SN019", "SN026", "SN027", "SN028", "SN008"],
+      "Automobile": ["SN020", "SN026", "SN027", "SN028", "SN008"],
+      "CNG Stations": ["SN023", "SN026", "SN027", "SN028", "SN008"],
+      "Pharmaceuticals": ["SN025", "SN026", "SN027", "SN028", "SN008"],
+      "Wholesale / Retails": ["SN026", "SN027", "SN028", "SN008"]
     },
     "Service Provider": {
       "All Other Sectors": [
@@ -1098,70 +875,18 @@
         "SN018",
         "SN019"
       ],
-      "Steel": [
-        "SN003",
-        "SN004",
-        "SN011",
-        "SN018",
-        "SN019"
-      ],
-      "FMCG": [
-        "SN008",
-        "SN018",
-        "SN019"
-      ],
-      "Textile": [
-        "SN009",
-        "SN018",
-        "SN019"
-      ],
-      "Telecom": [
-        "SN010",
-        "SN018",
-        "SN019"
-      ],
-      "Petroleum": [
-        "SN012",
-        "SN018",
-        "SN019"
-      ],
-      "Electricity Distribution": [
-        "SN013",
-        "SN018",
-        "SN019"
-      ],
-      "Gas Distribution": [
-        "SN014",
-        "SN018",
-        "SN019"
-      ],
-      "Services": [
-        "SN018",
-        "SN019"
-      ],
-      "Automobile": [
-        "SN020",
-        "SN018",
-        "SN019"
-      ],
-      "CNG Stations": [
-        "SN023",
-        "SN018",
-        "SN019"
-      ],
-      "Pharmaceuticals": [
-        "SN025",
-        "SN018",
-        "SN019"
-      ],
-      "Wholesale / Retails": [
-        "SN026",
-        "SN027",
-        "SN028",
-        "SN008",
-        "SN018",
-        "SN019"
-      ]
+      "Steel": ["SN003", "SN004", "SN011", "SN018", "SN019"],
+      "FMCG": ["SN008", "SN018", "SN019"],
+      "Textile": ["SN009", "SN018", "SN019"],
+      "Telecom": ["SN010", "SN018", "SN019"],
+      "Petroleum": ["SN012", "SN018", "SN019"],
+      "Electricity Distribution": ["SN013", "SN018", "SN019"],
+      "Gas Distribution": ["SN014", "SN018", "SN019"],
+      "Services": ["SN018", "SN019"],
+      "Automobile": ["SN020", "SN018", "SN019"],
+      "CNG Stations": ["SN023", "SN018", "SN019"],
+      "Pharmaceuticals": ["SN025", "SN018", "SN019"],
+      "Wholesale / Retails": ["SN026", "SN027", "SN028", "SN008", "SN018", "SN019"]
     }
   }
 }

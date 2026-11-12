@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { explainCode, explainResponse, listErrorCodes, KNOWN_ERROR_CODES, normaliseCode } from '../src/explain/index.js';
+import {
+  explainCode,
+  explainResponse,
+  listErrorCodes,
+  KNOWN_ERROR_CODES,
+  normaliseCode,
+} from '../src/explain/index.js';
 import { fixture } from './helpers.js';
 
 describe('explainCode', () => {
@@ -10,7 +16,22 @@ describe('explainCode', () => {
     expect(codes.filter((c) => c.side === 'purchase')).toHaveLength(22);
     expect(codes.map((c) => c.code)).toEqual([...codes.map((c) => c.code)].sort());
     for (const c of ['0001', '0113', '0156', '0177']) expect(KNOWN_ERROR_CODES).toContain(c);
-    for (const c of ['0052', '0104', '0007', '0013', '0044', '0046', '0091', '0099', '0300', '0401', '0402', '0002', '0005', '0078']) {
+    for (const c of [
+      '0052',
+      '0104',
+      '0007',
+      '0013',
+      '0044',
+      '0046',
+      '0091',
+      '0099',
+      '0300',
+      '0401',
+      '0402',
+      '0002',
+      '0005',
+      '0078',
+    ]) {
       expect(KNOWN_ERROR_CODES).toContain(c);
     }
   });

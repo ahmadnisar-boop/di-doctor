@@ -1,7 +1,7 @@
 name: Feature request
 description: A rule, explanation, integration surface or simulator behaviour you need.
-title: "[feature] "
-labels: ["enhancement"]
+title: '[feature] '
+labels: ['enhancement']
 body:
   - type: textarea
     id: problem
@@ -17,4 +17,4 @@ body:
     id: specref
     attributes:
       label: Spec section it is based on (rules must come from the spec)
-      placeholder: "spec v1.12 §4.1.2"
+      placeholder: 'spec v1.12 §4.1.2'

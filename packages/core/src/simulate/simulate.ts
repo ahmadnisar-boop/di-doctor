@@ -35,7 +35,13 @@ export interface SimulatorMeta {
   note: string;
   specVersion: string;
   rulesFailed: { ruleId: string; path: string; errorCode: string | null }[];
-  diagnostics: { ruleId: string; verdict: Finding['verdict']; severity?: Finding['severity']; path: string; message: string }[];
+  diagnostics: {
+    ruleId: string;
+    verdict: Finding['verdict'];
+    severity?: Finding['severity'];
+    path: string;
+    message: string;
+  }[];
 }
 
 export interface SimulatedResponse {
@@ -55,7 +61,8 @@ export function formatPkt(nowMs: number): string {
   return `${d.getUTCFullYear()}-${p(d.getUTCMonth() + 1)}-${p(d.getUTCDate())} ${p(d.getUTCHours())}:${p(d.getUTCMinutes())}:${p(d.getUTCSeconds())}`;
 }
 
-const UNMAPPED_NOTE = 'No FBR error code is documented for this condition; the simulator sends an empty errorCode with our own message.';
+const UNMAPPED_NOTE =
+  'No FBR error code is documented for this condition; the simulator sends an empty errorCode with our own message.';
 
 export function simulate(invoice: unknown, opts: SimulateOptions): SimulatedResponse {
   const endpoint = opts.endpoint ?? 'post';
@@ -67,7 +74,9 @@ export function simulate(invoice: unknown, opts: SimulateOptions): SimulatedResp
   };
   const findings = runRules(invoice, ruleOpts);
   const errors = findings.filter((f) => f.verdict === 'fail' && f.severity === 'error');
-  const diagnostics = findings.filter((f) => f.verdict === 'cannot-verify' || (f.verdict === 'fail' && f.severity === 'warning'));
+  const diagnostics = findings.filter(
+    (f) => f.verdict === 'cannot-verify' || (f.verdict === 'fail' && f.severity === 'warning'),
+  );
 
   const headerErrors = errors.filter((f) => !/^items\[\d+\]/.test(f.path));
   const byItem = new Map<number, Finding[]>();
@@ -78,23 +87,39 @@ export function simulate(invoice: unknown, opts: SimulateOptions): SimulatedResp
     byItem.set(i, [...(byItem.get(i) ?? []), f]);
   }
 
-  const inv = (typeof invoice === 'object' && invoice !== null && !Array.isArray(invoice) ? invoice : {}) as Record<string, unknown>;
+  const inv = (typeof invoice === 'object' && invoice !== null && !Array.isArray(invoice) ? invoice : {}) as Record<
+    string,
+    unknown
+  >;
   const items = Array.isArray(inv['items']) ? inv['items'] : [];
   const dated = formatPkt(opts.now);
   const meta = (failed: Finding[]): SimulatorMeta => ({
     note: `Simulated by DI Doctor from spec v${SPEC_VERSION} rules. Passing here does not guarantee FBR acceptance; checks that need FBR reference data are listed under diagnostics.${failed.some((f) => !f.errorCode) ? ' ' + UNMAPPED_NOTE : ''}`,
     specVersion: SPEC_VERSION,
     rulesFailed: failed.map((f) => ({ ruleId: f.ruleId, path: f.path, errorCode: f.errorCode ?? null })),
-    diagnostics: diagnostics.map((f) => ({ ruleId: f.ruleId, verdict: f.verdict, ...(f.severity ? { severity: f.severity } : {}), path: f.path, message: f.message })),
+    diagnostics: diagnostics.map((f) => ({
+      ruleId: f.ruleId,
+      verdict: f.verdict,
+      ...(f.severity ? { severity: f.severity } : {}),
+      path: f.path,
+      message: f.message,
+    })),
   });
-  const withMeta = (body: Record<string, unknown>, failed: Finding[]) => (opts.strictShape ? body : { ...body, _simulator: meta(failed) });
+  const withMeta = (body: Record<string, unknown>, failed: Finding[]) =>
+    opts.strictShape ? body : { ...body, _simulator: meta(failed) };
 
   // Header-level rejection (spec v1.12 §4.1.4): the error sits at the top and invoiceStatuses is null.
   if (headerErrors.length > 0) {
     const first = headerErrors[0]!;
     const body = {
       dated,
-      validationResponse: { statusCode: '01', status: 'Invalid', errorCode: first.errorCode ?? '', error: first.message, invoiceStatuses: null },
+      validationResponse: {
+        statusCode: '01',
+        status: 'Invalid',
+        errorCode: first.errorCode ?? '',
+        error: first.message,
+        invoiceStatuses: null,
+      },
     };
     return { httpStatus: 200, result: 'invalid', body: withMeta(body, headerErrors), diagnostics, errors };
   }
@@ -105,8 +130,20 @@ export function simulate(invoice: unknown, opts: SimulateOptions): SimulatedResp
       const errs = byItem.get(i);
       const first = errs?.[0];
       const s: SimulatedItemStatus = first
-        ? { itemSNo: String(i + 1), statusCode: '01', status: 'Invalid', errorCode: first.errorCode ?? '', error: first.message }
-        : { itemSNo: String(i + 1), statusCode: '00', status: 'Valid', errorCode: endpoint === 'validate' ? null : '', error: '' };
+        ? {
+            itemSNo: String(i + 1),
+            statusCode: '01',
+            status: 'Invalid',
+            errorCode: first.errorCode ?? '',
+            error: first.message,
+          }
+        : {
+            itemSNo: String(i + 1),
+            statusCode: '00',
+            status: 'Valid',
+            errorCode: endpoint === 'validate' ? null : '',
+            error: '',
+          };
       if (endpoint === 'post') s.invoiceNo = null;
       return s;
     });
@@ -135,7 +172,14 @@ export function simulate(invoice: unknown, opts: SimulateOptions): SimulatedResp
         statusCode: '00',
         status: 'Valid',
         error: '',
-        invoiceStatuses: items.map((_, i) => ({ itemSNo: String(i + 1), statusCode: '00', status: 'Valid', invoiceNo: `${invoiceNumber}-${i + 1}`, errorCode: '', error: '' })),
+        invoiceStatuses: items.map((_, i) => ({
+          itemSNo: String(i + 1),
+          statusCode: '00',
+          status: 'Valid',
+          invoiceNo: `${invoiceNumber}-${i + 1}`,
+          errorCode: '',
+          error: '',
+        })),
       },
     };
     return { httpStatus: 200, result: 'valid', body: withMeta(body, []), diagnostics, errors };
@@ -147,7 +191,13 @@ export function simulate(invoice: unknown, opts: SimulateOptions): SimulatedResp
       status: 'Valid',
       errorCode: null,
       error: '',
-      invoiceStatuses: items.map((_, i) => ({ itemSNo: String(i + 1), statusCode: '00', status: 'Valid', errorCode: null, error: '' })),
+      invoiceStatuses: items.map((_, i) => ({
+        itemSNo: String(i + 1),
+        statusCode: '00',
+        status: 'Valid',
+        errorCode: null,
+        error: '',
+      })),
     },
   };
   return { httpStatus: 200, result: 'valid', body: withMeta(body, []), diagnostics, errors };

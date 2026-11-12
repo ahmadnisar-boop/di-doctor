@@ -13,11 +13,13 @@
     "cli": "node --import tsx packages/cli/src/cli.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "pnpm -r --parallel --no-bail lint && eslint .",
+    "lint": "pnpm -r --parallel --no-bail lint && eslint . && prettier --check .",
     "build": "pnpm -r build",
     "docs:rules": "node --import tsx packages/cli/src/cli.ts rules --markdown > docs/rules.md",
     "docs:check": "node --import tsx packages/cli/src/cli.ts rules --markdown | diff -q - docs/rules.md",
-    "release": "bash scripts/release.sh"
+    "release": "bash scripts/release.sh",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -25,6 +27,7 @@
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
     "eslint": "^10.14.0",
+    "prettier": "^3.10.1",
     "tsup": "^9.0.0",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3",
