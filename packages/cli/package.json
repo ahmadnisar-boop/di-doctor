@@ -1,0 +1,49 @@
+{
+  "name": "di-doctor",
+  "version": "0.1.0",
+  "description": "Unofficial developer toolkit for Pakistan FBR Digital Invoicing \u2014 explain errors, validate invoices, read responses safely, simulate the sandbox.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "di-doctor": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "lint": "tsc --noEmit -p .",
+    "prepack": "cp ../../README.md README.md"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "commander": "^15.1.0",
+    "zod": "^4.6.7"
+  },
+  "keywords": [
+    "fbr",
+    "pakistan",
+    "digital-invoicing",
+    "sales-tax",
+    "pral",
+    "invoice",
+    "validation",
+    "mcp"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ahmadnisar-boop/di-doctor"
+  },
+  "homepage": "https://github.com/ahmadnisar-boop/di-doctor#readme",
+  "devDependencies": {
+    "@di-doctor/core": "workspace:*",
+    "@di-doctor/mcp": "workspace:*"
+  }
+}
