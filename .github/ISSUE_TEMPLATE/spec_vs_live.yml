@@ -1,0 +1,40 @@
+name: FBR behaved differently from the spec
+description: The live sandbox or production API accepted or rejected something that DI Doctor judged the other way. The most valuable report we can get.
+title: "[spec vs live] "
+labels: ["spec-vs-live"]
+body:
+  - type: markdown
+    attributes:
+      value: "Please replace every real NTN/CNIC/STRN with fake values (`0000001`, `1111111111111`) and remove tokens before posting."
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options: [sandbox, production]
+    validations:
+      required: true
+  - type: textarea
+    id: payload
+    attributes:
+      label: Payload sent (anonymised JSON)
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    id: response
+    attributes:
+      label: Exact FBR response body (and HTTP status)
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    id: didoctor
+    attributes:
+      label: What DI Doctor said
+      description: Output of `di-doctor validate ... --json` or `di-doctor simulate ... --json`, and the DI Doctor version.
+      render: json
+  - type: input
+    id: specref
+    attributes:
+      label: Spec section you believe applies (optional)
+      placeholder: "spec v1.12 §7 (0052)"

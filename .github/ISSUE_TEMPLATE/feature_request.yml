@@ -1,0 +1,20 @@
+name: Feature request
+description: A rule, explanation, integration surface or simulator behaviour you need.
+title: "[feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve for a developer integrating with FBR DI?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behaviour
+  - type: input
+    id: specref
+    attributes:
+      label: Spec section it is based on (rules must come from the spec)
+      placeholder: "spec v1.12 §4.1.2"
