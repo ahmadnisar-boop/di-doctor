@@ -1,0 +1,36 @@
+# Spec traps and inconsistencies (v1.12)
+
+Our own notes on places where the official *Technical Specification for DI API* v1.12 (PRAL, last updated 2025-07-24) is inconsistent, ambiguous, or likely to cause bugs. Written in our own words; section numbers refer to the official PDF (link in `src/data/spec-version.json`). When the spec is unclear we return `cannot-verify` instead of guessing.
+
+| # | Where | What we observed | What DI Doctor does |
+|---|---|---|---|
+| 1 | §4.1.2 field table vs. §4.1.1 samples, §5.2 | The table writes the key as `InvoiceType` and lists "Sales Invoice"; every JSON sample uses `invoiceType` with "Sale Invoice", and the document-type reference list also says "Sale Invoice". | Accepts "Sale Invoice" and "Debit Note". "Sales Invoice" returns `cannot-verify` with a hint (rule H01). |
+| 2 | §4.1.2 field table | Key spelled `buyeRegistrationType`; samples use `buyerRegistrationType`. | Warns if the misspelled key is present (rule H06). |
+| 3 | §7 code 0002 vs. 0401/0402 and samples | 0002 says an NTN can be 7 or 9 digits. 0401/0402 and the sample comments say 7 (NTN) or 13 (CNIC). | 7 or 13 → pass, 9 → `cannot-verify`, anything else → fail (rules H03/H07). |
+| 4 | §7 codes 0005 and 0113 | The long message mentions `01-DEC-2021` / `dd-MMM-yy`; the brief message and all samples use `YYYY-MM-DD`. | Requires `YYYY-MM-DD` (rule H02). |
+| 5 | §4.1.5 invalid sample | Header `statusCode` is "00" while `status` is "invalid" and the real error is inside `invoiceStatuses[]`. Code that only checks the header status code treats a failed invoice as accepted. | `check-response` combines header and item status and warns about the disagreement. |
+| 6 | §4.1.4 invalid sample | `invoiceStatuses` is `null` for header-level rejections and `errorCode` appears at header level only in that shape. | Both shapes handled. |
+| 7 | §4.1.3 / §4.1.5 / §4.2.4 | Status casing varies: "Valid", "Invalid", "invalid". | Compared case-insensitively. |
+| 8 | §9 vs. §4.1.1 | Scenario table says "Goods at Standard Rate (default)"; the sample payload says "Goods at standard rate (default)". | Sale type vs. scenario compared case-insensitively (rule I08). |
+| 9 | §10 | Several rows list SN008 twice. Serial numbers skip (14, 15, 29, 30, …). Manufacturer / Pharmaceuticals has no SN025 while Importer, Exporter, Distributor, Wholesaler, Retailer, Service Provider and Other / Pharmaceuticals do. | Table copied as printed, duplicates removed, oddity surfaced as a note in `scenarios` output. |
+| 10 | §8 | The purchase error table repeats the same block of codes three times. | Purchase codes are out of scope for v1. |
+| 11 | §7 code 0091 | "Extra tax must be empty" gives no condition for when extra tax is or is not allowed. | Explained, not validated. |
+| 12 | §7 codes 0077 / 0078 | The spec requires an SRO item serial number in some cases but never states the exact condition. We infer that a filled `sroScheduleNo` needs a filled `sroItemSerialNo`. | Reported as a warning, not an error (rule I07). |
+| 13 | §4.1.2 | `hsCode` format is only shown by example (`0101.2100`); no rule is stated. | Shape check is a warning only (rule I03). |
+| 14 | §4.1.2 | `scenarioId` is "Required for Sandbox only"; the spec does not say whether sending it in production is an error. | Warning in production (rule H11). |
+| 15 | §7 code 0079 | The threshold and rate appear as placeholders `{0}` / `{1}` in the long message; the brief message fills in 20,000 and 5%. | Implemented with those values (rule I06). |
+
+## Things the spec does not cover that we hear about from the field
+
+Not verified against the document; collected for later investigation.
+
+- Live error text sometimes differs from the table (for example the 0052 wording).
+- A "Sale type not match with provided scenario" message appears in sandbox; its code is not in §7.
+- Live rules may exist that the document does not mention. We will collect anonymised real responses, with permission, to find them.
+| 16 | §4.1.2 `totalValues` | Described as the total including tax, but no formula is given and the spec's own sample sends `0.00` next to a value of `1000.00` and tax of `180.00`. | `cannot-verify` (rule I12). |
+| 17 | §4.1.5 | Only a single failed item is shown. What FBR returns when some items pass and others fail in one invoice is not documented. | Simulator marks passing items `Valid` with `invoiceNo: null`; documented in `simulator.md`. |
+| 18 | §4.1.2 `discount` | Whether the rate applies before or after the discount is not stated. | Tax math returns `cannot-verify` when discount is non-zero (rule I04). |
+| 19 | §4.1.2 `rate` vs §5.8 | Rates can be compound ("18% along with rupees 60 per kilogram"); only the simple `N%` form can be recomputed. | `cannot-verify` for compound rates (rule I04). |
+| 20 | §9 vs §5.5 | §9 lists 28 sale types; the transaction-type reference API shows others (for example "DTRE goods"). The full list is not in the document. | Unknown sale types are `cannot-verify`, not failures (rule I11). |
+| 21 | §7 | Several codes refer to data that is not in the DI payload at all (reason, remarks, invoice number format, "input credit not allowed", sale origination province). They come from FBR's wider validation engine. | Explained with a note; never validated. |
+| 22 | §4.1.3 `dated` | Timestamp format and timezone are not stated; samples look like Pakistan Standard Time. | Simulator formats `dated` in UTC+5. |
