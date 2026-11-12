@@ -1,0 +1,16 @@
+{
+  "invoiceType": "Sale Invoice",
+  "invoiceDate": "2025-04-21",
+  "sellerNTNCNIC": "0000001",
+  "sellerBusinessName": "Test Seller Ltd",
+  "sellerProvince": "Sindh",
+  "sellerAddress": "Karachi",
+  "buyerNTNCNIC": "1111111111111",
+  "buyerBusinessName": "Test Buyer Ltd",
+  "buyerProvince": "Sindh",
+  "buyerAddress": "Karachi",
+  "buyerRegistrationType": "Registered",
+  "invoiceRefNo": "",
+  "scenarioId": "SN001",
+  "items": []
+}
