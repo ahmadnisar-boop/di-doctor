@@ -35,6 +35,12 @@ Edit `packages/core/src/data/errors.json`. Keep the fields: `title`, `meaning`, 
 
 Open an issue with the request (fake identifiers) and the exact response. Live behaviour that the document does not describe is the most valuable thing you can contribute.
 
-## Commits
+## Commits and pull requests
 
-Small commits, conventional prefixes (`feat`, `fix`, `docs`, `chore`, `test`).
+Small commits, conventional prefixes (`feat`, `fix`, `docs`, `chore`, `test`). `main` is protected: every change arrives through a pull request, must pass CI on Node 20, 22 and 24, and commits must be signed (SSH or GPG signing registered on your GitHub account). Squash merges are used, so a PR may contain several commits.
+
+## Releases (maintainers)
+
+1. Add a `## [x.y.z]` section to `CHANGELOG.md` in a PR and merge it.
+2. `pnpm release x.y.z` bumps the package versions and opens a signed release PR.
+3. After it is merged, `pnpm release x.y.z --tag` tags the merged commit and pushes the tag. The Release workflow builds, attaches tarballs to the GitHub Release and publishes the packages.
