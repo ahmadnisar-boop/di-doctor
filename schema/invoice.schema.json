@@ -1,0 +1,234 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/ahmadnisar-boop/di-doctor/main/schema/invoice.schema.json",
+  "title": "FBR Digital Invoicing invoice payload (unofficial)",
+  "description": "Request body for postinvoicedata / validateinvoicedata, derived from the PRAL Technical Specification for DI API v1.12 §4.1.1–4.1.2. Unofficial; checks structure and types only, not tax correctness. Field names are case-sensitive and follow the spec's JSON samples.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "invoiceType",
+    "invoiceDate",
+    "sellerNTNCNIC",
+    "sellerBusinessName",
+    "sellerProvince",
+    "sellerAddress",
+    "buyerBusinessName",
+    "buyerProvince",
+    "buyerAddress",
+    "buyerRegistrationType",
+    "items"
+  ],
+  "properties": {
+    "invoiceType": {
+      "type": "string",
+      "enum": [
+        "Sale Invoice",
+        "Debit Note"
+      ],
+      "description": "The spec's field table says \"Sales Invoice\" but every sample and the document-type list use \"Sale Invoice\"."
+    },
+    "invoiceDate": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "YYYY-MM-DD."
+    },
+    "sellerNTNCNIC": {
+      "$ref": "#/$defs/registrationNumber"
+    },
+    "sellerBusinessName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sellerProvince": {
+      "type": "string",
+      "minLength": 1,
+      "description": "A province description from the province reference API (§5.1)."
+    },
+    "sellerAddress": {
+      "type": "string",
+      "minLength": 1
+    },
+    "buyerNTNCNIC": {
+      "type": "string",
+      "pattern": "^([0-9]{7}|[0-9]{9}|[0-9]{13})?$",
+      "description": "Required when buyerRegistrationType is Registered; may be empty for unregistered buyers. 9 digits is allowed here only because spec error 0002 mentions it; other parts of the spec allow 7 or 13 only."
+    },
+    "buyerBusinessName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "buyerProvince": {
+      "type": "string",
+      "minLength": 1
+    },
+    "buyerAddress": {
+      "type": "string",
+      "minLength": 1
+    },
+    "buyerRegistrationType": {
+      "type": "string",
+      "enum": [
+        "Registered",
+        "Unregistered"
+      ]
+    },
+    "invoiceRefNo": {
+      "type": "string",
+      "description": "FBR invoice number of the original invoice; required for a Debit Note (22 characters for NTN-based sellers, 28 for CNIC-based). Empty otherwise."
+    },
+    "scenarioId": {
+      "type": "string",
+      "pattern": "^SN0(0[1-9]|1[0-9]|2[0-8])$",
+      "description": "Sandbox only (§9)."
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/item"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "buyerRegistrationType": {
+            "const": "Registered"
+          }
+        },
+        "required": [
+          "buyerRegistrationType"
+        ]
+      },
+      "then": {
+        "required": [
+          "buyerNTNCNIC"
+        ],
+        "properties": {
+          "buyerNTNCNIC": {
+            "type": "string",
+            "minLength": 7
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "invoiceType": {
+            "const": "Debit Note"
+          }
+        },
+        "required": [
+          "invoiceType"
+        ]
+      },
+      "then": {
+        "required": [
+          "invoiceRefNo"
+        ],
+        "properties": {
+          "invoiceRefNo": {
+            "type": "string",
+            "minLength": 22,
+            "maxLength": 28
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "registrationNumber": {
+      "type": "string",
+      "pattern": "^([0-9]{7}|[0-9]{9}|[0-9]{13})$",
+      "description": "7-digit NTN or 13-digit CNIC as a string of digits (keep leading zeros). 9 digits allowed only because of spec error 0002."
+    },
+    "amount": {
+      "type": "number"
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hsCode",
+        "productDescription",
+        "rate",
+        "uoM",
+        "quantity",
+        "totalValues",
+        "valueSalesExcludingST",
+        "fixedNotifiedValueOrRetailPrice",
+        "salesTaxApplicable",
+        "salesTaxWithheldAtSource",
+        "saleType"
+      ],
+      "properties": {
+        "hsCode": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Harmonized System code as listed by the item reference API (§5.3), e.g. 0101.2100."
+        },
+        "productDescription": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rate": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Rate description from the rate reference API (§5.8), e.g. \"18%\". Can be compound, so no pattern is enforced."
+        },
+        "uoM": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unit of measure description from the UOM reference API (§5.6)."
+        },
+        "quantity": {
+          "$ref": "#/$defs/amount"
+        },
+        "totalValues": {
+          "$ref": "#/$defs/amount",
+          "description": "Total sales value including tax. The spec gives no formula."
+        },
+        "valueSalesExcludingST": {
+          "$ref": "#/$defs/amount"
+        },
+        "fixedNotifiedValueOrRetailPrice": {
+          "$ref": "#/$defs/amount"
+        },
+        "salesTaxApplicable": {
+          "$ref": "#/$defs/amount",
+          "description": "Sales tax, or FED in sales-tax mode, excluding further and extra tax."
+        },
+        "salesTaxWithheldAtSource": {
+          "$ref": "#/$defs/amount",
+          "description": "Must be 0 or equal to salesTaxApplicable (spec error 0008)."
+        },
+        "extraTax": {
+          "$ref": "#/$defs/amount"
+        },
+        "furtherTax": {
+          "$ref": "#/$defs/amount"
+        },
+        "sroScheduleNo": {
+          "type": "string"
+        },
+        "fedPayable": {
+          "$ref": "#/$defs/amount"
+        },
+        "discount": {
+          "$ref": "#/$defs/amount"
+        },
+        "saleType": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Sale type as listed in spec §9 or the transaction-type reference API (§5.5)."
+        },
+        "sroItemSerialNo": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

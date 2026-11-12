@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/ahmadnisar-boop/di-doctor/main/schema/response.schema.json",
+  "title": "FBR Digital Invoicing API response (unofficial)",
+  "description": "Response body of postinvoicedata / validateinvoicedata, derived from spec v1.12 §4.1.3–4.1.5 and §4.2.3–4.2.4. Note: a response can be structurally valid and still describe a rejected invoice; the top-level statusCode alone does not tell you. Use DI Doctor's check-response for the verdict.",
+  "type": "object",
+  "required": ["validationResponse"],
+  "properties": {
+    "invoiceNumber": { "type": "string", "description": "Present on a successful postinvoicedata call only." },
+    "dated": { "type": "string", "description": "Server timestamp, e.g. 2025-05-13 12:01:41." },
+    "validationResponse": {
+      "type": "object",
+      "required": ["statusCode", "status"],
+      "properties": {
+        "statusCode": { "type": "string", "enum": ["00", "01"], "description": "00 valid, 01 invalid at header level. Can be 00 while status is invalid (§4.1.5)." },
+        "status": { "type": "string", "description": "Valid / Invalid in varying casing." },
+        "errorCode": { "type": ["string", "null"] },
+        "error": { "type": ["string", "null"] },
+        "invoiceStatuses": {
+          "type": ["array", "null"],
+          "description": "null for header-level rejections (§4.1.4).",
+          "items": {
+            "type": "object",
+            "required": ["itemSNo", "statusCode", "status"],
+            "properties": {
+              "itemSNo": { "type": "string" },
+              "statusCode": { "type": "string", "enum": ["00", "01"] },
+              "status": { "type": "string" },
+              "invoiceNo": { "type": ["string", "null"] },
+              "errorCode": { "type": ["string", "null"] },
+              "error": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    }
+  }
+}
