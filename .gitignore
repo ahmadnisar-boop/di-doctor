@@ -1,0 +1,21 @@
+# Official spec PDF — local copy only, never commit (CLAUDE.md rule 9)
+spec/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies and build output
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Copied from the root README at pack time
+packages/cli/README.md

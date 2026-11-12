@@ -1,0 +1,33 @@
+{
+  "name": "di-doctor-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Unofficial developer toolkit for Pakistan FBR Digital Invoicing — explain errors, validate invoices, read responses safely, simulate the sandbox.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@10.34.5",
+  "scripts": {
+    "cli": "node --import tsx packages/cli/src/cli.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "pnpm -r --parallel --no-bail lint && eslint .",
+    "build": "pnpm -r build",
+    "docs:rules": "node --import tsx packages/cli/src/cli.ts rules --markdown > docs/rules.md",
+    "docs:check": "node --import tsx packages/cli/src/cli.ts rules --markdown | diff -q - docs/rules.md"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.19.2",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "eslint": "^10.14.0",
+    "tsup": "^9.0.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.72.2",
+    "vitest": "~5.0.5"
+  }
+}

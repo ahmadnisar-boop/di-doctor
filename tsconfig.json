@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "declaration": true,
+    "types": ["node"],
+    "paths": {
+      "@di-doctor/core": ["./packages/core/src/index.ts"],
+      "@di-doctor/mcp": ["./packages/mcp/src/index.ts"]
+    }
+  },
+  "files": []
+}
