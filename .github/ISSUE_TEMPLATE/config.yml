@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Official FBR Digital Invoicing documentation
+    url: https://download1.fbr.gov.pk/Docs/2025791371655422DigitalInvoicingTechnicalSpecsv1.12.pdf
+    about: DI Doctor is unofficial. The PRAL technical specification is the source of truth.

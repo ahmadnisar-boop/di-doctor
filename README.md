@@ -1,5 +1,11 @@
 # DI Doctor
 
+[![CI](https://github.com/ahmadnisar-boop/di-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/ahmadnisar-boop/di-doctor/actions/workflows/ci.yml)
+[![Release](https://github.com/ahmadnisar-boop/di-doctor/actions/workflows/release.yml/badge.svg)](https://github.com/ahmadnisar-boop/di-doctor/releases)
+![Spec](https://img.shields.io/badge/FBR%20DI%20spec-v1.12-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)
+
 > **Unofficial developer tool. Not affiliated with FBR or PRAL. Not tax advice. Always verify against the latest official documentation.**
 
 DI Doctor helps developers integrate with Pakistan's FBR Digital Invoicing (DI) API faster. It validates invoice payloads offline, explains every FBR error code in plain English, reads FBR responses safely, lists the sandbox scenarios you must pass, and runs a **local sandbox simulator** so you can integrate before you have FBR access. Works with any language: JSON in, JSON out.
@@ -21,6 +27,13 @@ npx di-doctor --help
 ```
 
 Library use in Node/TypeScript: `npm install di-doctor` (or `@di-doctor/core` for the pure functions only).
+
+Until the public npm release, every tagged version is also published to GitHub Packages as `@ahmadnisar-boop/di-doctor` and `@ahmadnisar-boop/di-doctor-core` (see [Releases](https://github.com/ahmadnisar-boop/di-doctor/releases) for tarballs):
+
+```sh
+npm config set @ahmadnisar-boop:registry https://npm.pkg.github.com
+npm install @ahmadnisar-boop/di-doctor
+```
 
 ## 60-second tour
 
@@ -109,7 +122,7 @@ v1.12, last updated 2025-07-24. Official document link: `packages/core/src/data/
 
 ## Contributing
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md). Adding a rule is one file plus a passing and a failing fixture.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md). Adding a rule is one file plus a passing and a failing fixture. The most useful report you can file is [FBR behaved differently from the spec](https://github.com/ahmadnisar-boop/di-doctor/issues/new?template=spec_vs_live.yml). Changes are tracked in [`CHANGELOG.md`](CHANGELOG.md); security reports go through [`SECURITY.md`](SECURITY.md).
 
 ## License
 

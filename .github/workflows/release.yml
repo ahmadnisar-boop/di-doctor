@@ -1,0 +1,80 @@
+name: Release
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      OWNER: ahmadnisar-boop
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+
+      - name: Check that the tag matches the package version
+        run: |
+          v=$(node -p "require('./packages/cli/package.json').version")
+          [ "v$v" = "$GITHUB_REF_NAME" ] || { echo "tag $GITHUB_REF_NAME does not match package version $v"; exit 1; }
+
+      - name: Pack tarballs for the release
+        run: |
+          mkdir -p release
+          (cd packages/cli && npm pack --pack-destination ../../release)
+          (cd packages/core && npm pack --pack-destination ../../release)
+          ls -la release
+
+      - name: Publish to GitHub Packages (owner-scoped mirrors)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
+          publish_mirror() {  # <package dir> <scoped name>
+            tmp=$(mktemp -d); cp -R "$1"/. "$tmp"/; cp README.md "$tmp"/README.md
+            (cd "$tmp" \
+              && npm pkg set name="$2" publishConfig.registry=https://npm.pkg.github.com \
+              && npm pkg delete scripts.prepack devDependencies \
+              && npm publish --registry https://npm.pkg.github.com)
+          }
+          publish_mirror packages/cli  "@${OWNER}/di-doctor"
+          publish_mirror packages/core "@${OWNER}/di-doctor-core"
+
+      - name: Publish di-doctor to npmjs (only when NPM_TOKEN is configured)
+        env:
+          HAS_NPM_TOKEN: ${{ secrets.NPM_TOKEN != '' }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        if: env.HAS_NPM_TOKEN == 'true'
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
+          (cd packages/cli && cp ../../README.md README.md && npm pkg delete devDependencies && npm publish --access public --registry https://registry.npmjs.org)
+
+      - name: Extract changelog section
+        run: |
+          awk -v tag="${GITHUB_REF_NAME#v}" '
+            /^## \[/ { if (found) exit; if (index($0, "[" tag "]")) { found=1; next } }
+            found { print }
+          ' CHANGELOG.md > release/notes.md
+          [ -s release/notes.md ] || echo "See CHANGELOG.md." > release/notes.md
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" release/*.tgz \
+            --title "di-doctor $GITHUB_REF_NAME" \
+            --notes-file release/notes.md \
+            --verify-tag
