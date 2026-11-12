@@ -1,0 +1,19 @@
+{
+  "invoiceNumber": "0000001DI1747119701593",
+  "dated": "2025-05-13 12:01:41",
+  "validationResponse": {
+    "statusCode": "00",
+    "status": "Valid",
+    "error": "",
+    "invoiceStatuses": [
+      {
+        "itemSNo": "1",
+        "statusCode": "00",
+        "status": "Valid",
+        "invoiceNo": "0000001DI1747119701593-1",
+        "errorCode": "",
+        "error": ""
+      }
+    ]
+  }
+}

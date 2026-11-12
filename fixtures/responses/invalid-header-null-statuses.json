@@ -1,0 +1,10 @@
+{
+  "dated": "2025-05-13 13:09:05",
+  "validationResponse": {
+    "statusCode": "01",
+    "status": "Invalid",
+    "errorCode": "0052",
+    "error": "Provide proper HS Code with invoice no. null",
+    "invoiceStatuses": null
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "invoiceNumber": "0000001DI1747119701593",
+  "dated": "2025-05-13 13:10:00",
+  "validationResponse": {
+    "statusCode": "00",
+    "status": "Valid",
+    "error": "",
+    "invoiceStatuses": [
+      {
+        "itemSNo": "1",
+        "statusCode": "00",
+        "status": "Valid",
+        "invoiceNo": "0000001DI1747119701593-1",
+        "errorCode": "",
+        "error": ""
+      },
+      {
+        "itemSNo": "2",
+        "statusCode": "01",
+        "status": "Invalid",
+        "invoiceNo": null,
+        "errorCode": "0104",
+        "error": "The calculated percentage sales tax does not match."
+      }
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "_comment": "The 28 sale types from spec v1.12 §9. taxBase says whether DI Doctor can recompute sales tax offline: only 'simple-percent' uses valueSalesExcludingST × rate. restrictions list spec §7 codes that single out this sale type, in our own words.",
+  "types": [
+    { "saleType": "Goods at Standard Rate (default)", "taxBase": "simple-percent", "restrictions": [] },
+    { "saleType": "Goods at Reduced Rate", "taxBase": "simple-percent", "restrictions": [{ "code": "0079", "note": "5% is not accepted when the line value excluding tax is above 20,000 (checked by rule I06)." }] },
+    { "saleType": "Goods at zero-rate", "taxBase": "simple-percent", "restrictions": [] },
+    { "saleType": "Exempt Goods", "taxBase": "simple-percent", "restrictions": [] },
+    { "saleType": "3rd Schedule Goods", "taxBase": "retail-price", "restrictions": [{ "code": "0102", "note": "FBR recomputes tax with the Third Schedule formula based on the retail price; the formula is not in the spec." }] },
+    { "saleType": "Steel Melting and re-rolling", "taxBase": "unspecified", "restrictions": [{ "code": "0101", "note": "Steel sector sales may be required to use the Toll Manufacturing sale type." }, { "code": "0056", "note": "The buyer must exist in FBR's steel sector list." }] },
+    { "saleType": "Ship breaking", "taxBase": "unspecified", "restrictions": [{ "code": "0101", "note": "Steel sector sales may be required to use the Toll Manufacturing sale type." }] },
+    { "saleType": "Toll Manufacturing", "taxBase": "unspecified", "restrictions": [{ "code": "0056", "note": "The buyer must exist in FBR's steel sector list." }] },
+    { "saleType": "Cotton Ginners", "taxBase": "unspecified", "restrictions": [{ "code": "0100", "note": "Only allowed against registered buyers." }, { "code": "0050", "note": "Sales tax withheld must be zero or equal to the sales tax (checked by rule I05)." }] },
+    { "saleType": "Telecommunication services", "taxBase": "unspecified", "restrictions": [] },
+    { "saleType": "Petroleum Products", "taxBase": "unspecified", "restrictions": [{ "code": "0087", "note": "Petroleum levy rates must be configured on FBR's side." }] },
+    { "saleType": "Electricity Supply to Retailers", "taxBase": "unspecified", "restrictions": [{ "code": "0096", "note": "Only the KWH unit of measure is accepted for electricity HS codes." }, { "code": "0098", "note": "Quantity must carry the electricity units." }] },
+    { "saleType": "Gas to CNG stations", "taxBase": "unspecified", "restrictions": [] },
+    { "saleType": "Mobile Phones", "taxBase": "unspecified", "restrictions": [] },
+    { "saleType": "Processing/ Conversion of Goods", "taxBase": "unspecified", "restrictions": [] },
+    { "saleType": "Goods (FED in ST Mode)", "taxBase": "unspecified", "restrictions": [{ "code": "0089", "note": "FED charged may be required for FED-in-sales-tax-mode sales." }] },
+    { "saleType": "Services (FED in ST Mode)", "taxBase": "unspecified", "restrictions": [{ "code": "0089", "note": "FED charged may be required for FED-in-sales-tax-mode sales." }] },
+    { "saleType": "Services", "taxBase": "unspecified", "restrictions": [] },
+    { "saleType": "Electric Vehicle", "taxBase": "unspecified", "restrictions": [] },
+    { "saleType": "Cement /Concrete Block", "taxBase": "unspecified", "restrictions": [] },
+    { "saleType": "Potassium Chlorate", "taxBase": "quantity", "restrictions": [{ "code": "0103", "note": "FBR recomputes tax for potassium chlorate with a quantity-based formula that is not in the spec." }] },
+    { "saleType": "CNG Sales", "taxBase": "unspecified", "restrictions": [] },
+    { "saleType": "Goods as per SRO.297(|)/2023", "taxBase": "unspecified", "restrictions": [{ "code": "0077", "note": "An SRO schedule number is likely required." }] },
+    { "saleType": "Non-Adjustable Supplies", "taxBase": "unspecified", "restrictions": [] }
+  ]
+}
