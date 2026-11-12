@@ -1,0 +1,14 @@
+{
+  "statusCode": "00",
+  "status": "Valid",
+  "error": "",
+  "invoiceStatuses": [
+    {
+      "itemSNo": "1",
+      "statusCode": "00",
+      "status": "Valid",
+      "errorCode": "",
+      "error": ""
+    }
+  ]
+}
