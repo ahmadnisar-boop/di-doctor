@@ -6,10 +6,12 @@ on:
 permissions:
   contents: write
   packages: write
+  id-token: write # npm trusted publishing (OIDC): no stored npm token
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    environment: release # must match the environment configured on npmjs.com for each package
     env:
       OWNER: ahmadnisar-boop
     steps:
@@ -21,6 +23,8 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+      - name: Upgrade npm (trusted publishing needs npm >= 11.5.1)
+        run: npm install -g npm@latest && npm --version
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm test
@@ -38,6 +42,19 @@ jobs:
           (cd packages/core && npm pack --pack-destination ../../release)
           ls -la release
 
+      - name: Publish to npmjs (trusted publishing, provenance attached)
+        run: |
+          publish_npm() {  # <package dir> <name>  (idempotent: skips a version that is already published)
+            v=$(node -p "require('./$1/package.json').version")
+            if npm view "$2@$v" version --registry https://registry.npmjs.org >/dev/null 2>&1; then echo "$2@$v already on npmjs, skipping"; return 0; fi
+            (cd "$1" \
+              && { [ -f README.md ] || cp ../../README.md README.md; } \
+              && npm pkg delete devDependencies \
+              && npm publish --access public --provenance --registry https://registry.npmjs.org)
+          }
+          publish_npm packages/core "@di-doctor/core"
+          publish_npm packages/cli  "di-doctor"
+
       - name: Publish to GitHub Packages (owner-scoped mirrors)
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -54,18 +71,6 @@ jobs:
           }
           publish_mirror packages/cli  "@${OWNER}/di-doctor"
           publish_mirror packages/core "@${OWNER}/di-doctor-core"
-
-      - name: Publish di-doctor to npmjs (only when NPM_TOKEN is configured)
-        env:
-          HAS_NPM_TOKEN: ${{ secrets.NPM_TOKEN != '' }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        if: env.HAS_NPM_TOKEN == 'true'
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
-          v=$(node -p "require('./packages/cli/package.json').version")
-          if npm view "di-doctor@$v" version --registry https://registry.npmjs.org >/dev/null 2>&1; then echo "di-doctor@$v already on npmjs, skipping"; else
-            (cd packages/cli && cp ../../README.md README.md && npm pkg delete devDependencies && npm publish --access public --registry https://registry.npmjs.org)
-          fi
 
       - name: Extract changelog section
         run: |

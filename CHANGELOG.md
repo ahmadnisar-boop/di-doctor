@@ -8,6 +8,7 @@ All notable changes to this project are documented here. The format follows [Kee
 
 - Repository prepared for public release: design notes replace the private planning document, per-package READMEs, complete package metadata, code of conduct, Prettier formatting, CI on Node 20/22/24, pinned-major GitHub Actions, idempotent release workflow.
 - `main` is protected (pull request, passing CI, signed commits); `pnpm release` now opens a release PR and tags after the merge.
+- `di-doctor` and `@di-doctor/core` are published to npm from the Release workflow using npm trusted publishing (OIDC) with provenance; no stored npm token.
 
 ## [0.1.0] - 2026-11-12
 

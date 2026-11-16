@@ -43,4 +43,4 @@ Small commits, conventional prefixes (`feat`, `fix`, `docs`, `chore`, `test`). `
 
 1. Add a `## [x.y.z]` section to `CHANGELOG.md` in a PR and merge it.
 2. `pnpm release x.y.z` bumps the package versions and opens a signed release PR.
-3. After it is merged, `pnpm release x.y.z --tag` tags the merged commit and pushes the tag. The Release workflow builds, attaches tarballs to the GitHub Release and publishes the packages.
+3. After it is merged, `pnpm release x.y.z --tag` tags the merged commit and pushes the tag. The Release workflow builds, attaches tarballs to the GitHub Release and publishes `di-doctor` and `@di-doctor/core` to npm (trusted publishing from the `release` environment, with provenance; there is no npm token to rotate) and the mirrors to GitHub Packages.
