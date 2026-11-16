@@ -4,11 +4,19 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-16
+
+No functional changes. First version published to npm by the Release workflow with provenance.
+
 ### Changed
 
 - Repository prepared for public release: design notes replace the private planning document, per-package READMEs, complete package metadata, code of conduct, Prettier formatting, CI on Node 20/22/24, pinned-major GitHub Actions, idempotent release workflow.
 - `main` is protected (pull request, passing CI, signed commits); `pnpm release` now opens a release PR and tags after the merge.
 - `di-doctor` and `@di-doctor/core` are published to npm from the Release workflow using npm trusted publishing (OIDC) with provenance; no stored npm token.
+
+### Security
+
+- Development tooling: `minimatch` pinned to 11.x via a pnpm override (GHSA advisory on 10.x; the package is only used by ESLint and never shipped).
 
 ## [0.1.0] - 2026-11-12
 
@@ -25,5 +33,6 @@ First release. Based on the FBR/PRAL *Technical Specification for DI API* v1.12 
 - `rules` and `codes` commands, `--json` output, stdin support, exit codes 0/1/2.
 - Documentation: integration guide, simulator fidelity statement, generated rules reference, and notes on 22 inconsistencies found in the spec.
 
-[Unreleased]: https://github.com/ahmadnisar-boop/di-doctor/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/ahmadnisar-boop/di-doctor/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/ahmadnisar-boop/di-doctor/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/ahmadnisar-boop/di-doctor/releases/tag/v0.1.0

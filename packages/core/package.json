@@ -1,6 +1,6 @@
 {
   "name": "@di-doctor/core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Pure validation, response checking, error explanations, scenarios and sandbox simulator for Pakistan FBR Digital Invoicing (unofficial).",
   "license": "MIT",
   "author": "Ahmad Nisar <ahmadnisar3790@gmail.com>",
