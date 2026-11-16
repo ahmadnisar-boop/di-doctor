@@ -28,12 +28,7 @@ npx di-doctor --help
 
 Library use in Node/TypeScript: `npm install di-doctor` (or `@di-doctor/core` for the pure functions only).
 
-Until the public npm release, every tagged version is also published to GitHub Packages as `@ahmadnisar-boop/di-doctor` and `@ahmadnisar-boop/di-doctor-core` (see [Releases](https://github.com/ahmadnisar-boop/di-doctor/releases) for tarballs):
-
-```sh
-npm config set @ahmadnisar-boop:registry https://npm.pkg.github.com
-npm install @ahmadnisar-boop/di-doctor
-```
+Releases are published from GitHub Actions with [npm provenance](https://docs.npmjs.com/generating-provenance-statements), so every version on npm can be traced to the commit and workflow run that built it. Each [GitHub Release](https://github.com/ahmadnisar-boop/di-doctor/releases) also carries the tarballs, and the same versions are mirrored on GitHub Packages as `@ahmadnisar-boop/di-doctor` and `@ahmadnisar-boop/di-doctor-core`.
 
 ## 60-second tour
 
