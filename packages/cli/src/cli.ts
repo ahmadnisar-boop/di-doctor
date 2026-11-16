@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /** DI Doctor CLI. The only module that touches the file system or process. Everything else is pure. */
 import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { Command, InvalidArgumentError } from 'commander';
 import type { Finding, ErrorExplanation, ResponseCheck } from '@di-doctor/core';
 import {
@@ -16,6 +17,9 @@ import {
   simulate,
 } from '@di-doctor/core';
 import { createServer, listen } from './serve.js';
+
+// Resolves to packages/cli/package.json both from src/ (dev) and from dist/ (published), so --version never drifts.
+const { version: VERSION } = createRequire(import.meta.url)('../package.json') as { version: string };
 
 const EXIT_OK = 0;
 const EXIT_FAIL = 1;
@@ -131,7 +135,7 @@ program
   .description(
     'Unofficial toolkit for Pakistan FBR Digital Invoicing: read responses safely, validate payloads offline, explain errors, list sandbox scenarios.',
   )
-  .version('0.0.1')
+  .version(VERSION)
   .option('--json', 'machine-readable JSON output')
   .option('--verbose', 'show every cannot-verify finding instead of grouping them per rule')
   .option('--no-color', 'disable colours')

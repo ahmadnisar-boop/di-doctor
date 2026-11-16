@@ -1,7 +1,7 @@
 {
   "name": "di-doctor-monorepo",
   "private": true,
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Unofficial developer toolkit for Pakistan FBR Digital Invoicing \u2014 explain errors, validate invoices, read responses safely, simulate the sandbox.",
   "license": "MIT",
   "type": "module",

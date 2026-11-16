@@ -2,6 +2,7 @@
  * MCP server exposing DI Doctor's pure functions as tools. Read-only, no network, no file I/O.
  * Inputs accept either a JSON object or a JSON string so assistants can pass payloads either way.
  */
+import { createRequire } from 'node:module';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import {
@@ -33,9 +34,13 @@ function parseJson(v: unknown): unknown {
 
 const text = (data: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(data, null, 2) }] });
 
+// Resolves to the package.json of whichever package this file is built into (mcp, or the bundled cli); their
+// versions move in lockstep, so the version advertised to clients never drifts from the published one.
+const { version: VERSION } = createRequire(import.meta.url)('../package.json') as { version: string };
+
 export function createDiDoctorServer(): McpServer {
   const server = new McpServer(
-    { name: 'di-doctor', version: '0.1.0' },
+    { name: 'di-doctor', version: VERSION },
     {
       instructions: `Unofficial toolkit for Pakistan FBR Digital Invoicing (spec v${SPEC_VERSION}). Technical checks only, never tax advice. Verdicts are pass, fail or cannot-verify; never guess beyond them. Official document: ${SPEC_URL}`,
     },

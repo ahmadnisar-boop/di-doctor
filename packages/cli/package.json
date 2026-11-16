@@ -1,6 +1,6 @@
 {
   "name": "di-doctor",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Unofficial developer toolkit for Pakistan FBR Digital Invoicing \u2014 explain errors, validate invoices, read responses safely, simulate the sandbox.",
   "license": "MIT",
   "author": "Ahmad Nisar <ahmadnisar3790@gmail.com>",

@@ -25,6 +25,10 @@ const call = async (name: string, args: Record<string, unknown>) => {
 };
 
 describe('MCP server', () => {
+  it('advertises the package version', () => {
+    const { version } = JSON.parse(readFileSync('packages/mcp/package.json', 'utf8')) as { version: string };
+    expect(client.getServerVersion()).toEqual({ name: 'di-doctor', version });
+  });
   it('lists the five tools', async () => {
     const tools = (await client.listTools()).tools.map((t) => t.name).sort();
     expect(tools).toEqual([
