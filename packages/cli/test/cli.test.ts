@@ -11,6 +11,12 @@ const cli = (...args: string[]) => {
 };
 
 describe('CLI', () => {
+  it('--version prints the package version', () => {
+    const { version } = JSON.parse(readFileSync('packages/cli/package.json', 'utf8')) as { version: string };
+    const r = cli('--version');
+    expect(r.code).toBe(0);
+    expect(r.out.trim()).toBe(version);
+  });
   it('check-response: misleading header exits 1 and says INVALID', () => {
     const r = cli('check-response', 'fixtures/responses/invalid-misleading-header.json');
     expect(r.code).toBe(1);
